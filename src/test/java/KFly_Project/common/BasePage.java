@@ -1,17 +1,10 @@
-package common;
+package KFly_Project.common;
 
 import Base.WebUI;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
 public class BasePage {
-    private WebDriver driver;
-
-    // Constructor
-    public BasePage(WebDriver driver) {
-        this.driver = driver;
-        new WebUI(driver);
-    }
 
     // Elements chung cho tất cả các page
 
@@ -19,7 +12,7 @@ public class BasePage {
     public By buttonSignUp = By.xpath("//button[normalize-space()='Sign up']");
 
 
-    // methods
+    // Methods
 
     public void clickbuttonSignIn() {
         WebUI.clickElement(buttonSignIn);
