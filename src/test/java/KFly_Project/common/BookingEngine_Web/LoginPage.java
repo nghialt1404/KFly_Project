@@ -36,6 +36,7 @@ public class LoginPage extends BasePage {
     private By alertLoginSuccess = By.xpath("//div[@class='w-full max-w-md']/descendant::div//span");
     private By alertInvalidEmail = By.xpath("//span[normalize-space()='Enter a valid email']");
     private By alertResendOTP5Times = By.xpath("//div[@class='w-full max-w-md']/descendant::div//span");
+    private By SigninWithOTP_alertEmailInactive = By.xpath("//div[@class='w-full']/descendant::div//span");
 
     //Login Password
     private By buttonContinueWithPassword = By.xpath("//button[normalize-space()='Continue with password']");
@@ -246,7 +247,6 @@ public class LoginPage extends BasePage {
     public void loginWithOTP_EmailNull() throws Exception {
         navigatetourl();
         clickButtonSignin();
-        clickButtonContinueWithPassword();
         enterEmail("");
         clickButtonContinue();
 
@@ -259,7 +259,6 @@ public class LoginPage extends BasePage {
     public void loginWithOTP_EmailInvalid() throws Exception {
         navigatetourl();
         clickButtonSignin();
-        clickButtonContinueWithPassword();
         enterEmail("ray@@gmail.com");
         clickButtonContinue();
 
@@ -359,6 +358,20 @@ public class LoginPage extends BasePage {
         WebUI.waitForElementVisible(alertResendOTP5Times);
         String alertMessageOTP5Times = WebUI.getElementText(alertResendOTP5Times);
         WebUI.assertEquals(alertMessageOTP5Times, "You've requested too many OTP codes. Please wait for 1 hour before trying again.", "Message not match");
+    }
+
+    public void loginWithOTP_EmailInActive() throws Exception {
+        navigatetourl();
+        clickButtonSignin();
+        enterEmail("nghialt1404@gmail.com");
+        clickButtonContinue();
+
+        // Verify
+        WebUI.waitForElementVisible(SigninWithOTP_alertEmailInactive);
+        String AlertSetNewPasswordSuccess = WebUI.getElementText(SigninWithOTP_alertEmailInactive);
+        WebUI.assertEquals(AlertSetNewPasswordSuccess, "This account is currently inactive. Please reach out to our support team to reactivate your account.", "Message not match");
+
+
     }
 
     // ********** Method for LoginWithPassword **************
@@ -464,6 +477,22 @@ public class LoginPage extends BasePage {
 
     }
 
+    public void loginWithPassword_EmailInactive() throws Exception {
+        navigatetourl();
+        clickButtonSignin();
+        clickButtonContinueWithPassword();
+        enterEmail("nghialt1404@gmail.com");
+        enterPassword("raygay11$");
+        WebUI.clickElement(buttonSignin);
+
+
+        // Verify
+        WebUI.waitForElementVisible(alertEmaiLInActive);
+        String AlertSetNewPasswordSuccess = WebUI.getElementText(alertEmaiLInActive);
+        WebUI.assertEquals(AlertSetNewPasswordSuccess, "This account is currently inactive. Please reach out to our support team to reactivate your account.", "Message not match");
+
+    }
+
 // ************* FORGOT PASSWORD **************
 
     public void clickButtonForgotPassword() {
@@ -497,7 +526,7 @@ public class LoginPage extends BasePage {
         WebUI.clickElement(buttonContinueForgotPassword);
     }
 
-    public void loginWithPassword_clickResendButton5Times() throws Exception {
+    public void FGPW_clickResendButton5Times() throws Exception {
         navigatetourl();
         clickButtonSignin();
         clickButtonContinueWithPassword();
@@ -539,7 +568,7 @@ public class LoginPage extends BasePage {
 
     }
 
-    public void loginWithPassword_enterWrongOTP5Times() throws Exception {
+    public void FGPW_enterWrongOTP5Times() throws Exception {
         navigatetourl();
         clickButtonSignin();
         clickButtonContinueWithPassword();
@@ -562,7 +591,7 @@ public class LoginPage extends BasePage {
     }
 
 
-        public void FGPWSuccess() throws Exception {
+    public void FGPWSuccess() throws Exception {
         navigatetourl();
         clickButtonSignin();
         clickButtonContinueWithPassword();
@@ -661,8 +690,6 @@ public class LoginPage extends BasePage {
         WebUI.assertEquals(AlertSetNewPasswordSuccess, "This account is currently inactive. Please reach out to our support team to reactivate your account.", "Message not match");
 
     }
-
-
 
 
 }
