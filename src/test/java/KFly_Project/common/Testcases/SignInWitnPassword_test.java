@@ -53,16 +53,12 @@ public class SignInWitnPassword_test extends BaseTest {
     }
 
     @Test
-    void testSigninWithPassword_enterWrongOTP5Times() throws Exception {
+    void testSigninWithPassword_EmailInactive() throws Exception {
         loginPage = new LoginPage();
-        loginPage.loginWithPassword_enterWrongOTP5Times();
+        loginPage.loginWithPassword_EmailInactive();
 
     }
 
-    @Test
-    void testSigninWithPassword_FGPW_EmailInActive() throws Exception {
-        loginPage = new LoginPage();
-        loginPage.FGPW_EmailInActive();
 
-    }
+
 }

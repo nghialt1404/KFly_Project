@@ -57,5 +57,12 @@ public class SignInWitnOTP_test extends BaseTest {
 
     }
 
+    @Test
+    void testSigninWithOTP_EmailInactive() throws Exception {
+        loginPage = new LoginPage();
+        loginPage.loginWithOTP_EmailInActive();
+
+    }
+
 
 }

@@ -43,7 +43,21 @@ public class ForgotPassword_test extends BaseTest {
     @Test
     public void FGPW_ResendOTP5Times() throws Exception {
         loginPage = new LoginPage();
-        loginPage.loginWithPassword_clickResendButton5Times();
+        loginPage.FGPW_clickResendButton5Times();
+    }
+
+    @Test
+    void testFGPW_enterWrongOTP5Times() throws Exception {
+        loginPage = new LoginPage();
+        loginPage.FGPW_enterWrongOTP5Times();
+
+    }
+
+    @Test
+    void testSigninWithPassword_EmailInActive() throws Exception {
+        loginPage = new LoginPage();
+        loginPage.FGPW_EmailInActive();
+
     }
 
 
