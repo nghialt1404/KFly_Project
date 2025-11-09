@@ -5,18 +5,16 @@ import KFly_Project.common.BasePage;
 import jakarta.mail.*;
 import jakarta.mail.internet.MimeMultipart;
 import jakarta.mail.search.SubjectTerm;
-import keyword.DriverManager;
 import org.openqa.selenium.*;
-import org.testng.Assert;
 
 
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class LoginPage extends BasePage {
+public class LoginPage_BKEG extends BasePage {
 
-    private String url_login_admin = "https://dev.eluxia.org/en?currency=USD";
+    private String url_login_bkeg = "https://dev.eluxia.org/en?currency=USD";
 
     String mailHost = "imap.gmail.com";// e.g. imap.gmail.com
     int mailPort = 993;
@@ -73,7 +71,7 @@ public class LoginPage extends BasePage {
 
     // ************ Method Common ***********
     public void navigatetourl() {
-        WebUI.openURL(url_login_admin);
+        WebUI.openURL(url_login_bkeg);
     }
 
 
@@ -331,25 +329,23 @@ public class LoginPage extends BasePage {
         WebUI.waitForElementVisible(buttonResendOTPCode, 70);
 
         for (int i = 1; i <= 5; i++) {
+            try {
+                WebUI.waitForElementToBeClickAble(buttonResendOTPCode, 10); // chờ countdown 60s
+                WebUI.clickElement(buttonResendOTPCode);
+                System.out.println("✅ Click Resend OTP lần " + i + " thành công");
+            } catch (TimeoutException e) {
+                System.out.println("⚠️ Timeout ở lần " + i);
+                break;
+            }
 
-            //  Hiển thị thông báo lỗi → dừng test
+            // 🔹 Kiểm tra lại ngay sau khi click — nếu hệ thống hiện lỗi thì dừng test luôn
+            // 🕑 Chờ 3 giây để hệ thống hiển thị alert nếu có
+            Thread.sleep(2000);
             if (WebUI.checkElementExist(alertResendOTP5Times)) {
                 break;
             }
-            try {
-                WebUI.waitForElementToBeClickAble(buttonResendOTPCode, 70); // chờ countdown 60s
-                WebUI.clickElement(buttonResendOTPCode);
-
-                System.out.println("✅ Click Resend OTP lần " + i + " thành công");
-                Thread.sleep(2000);
-
-            } catch (TimeoutException e) {
-                System.out.println("⚠️ Timeout: Nút resend chưa bật lại trong 70s, dừng ở lần " + i);
-                break;
-            } catch (Exception e) {
-                System.out.println("⚠️ Lỗi ở lần " + i + ": " + e.getMessage());
-                break;
-            }
+            // Nếu chưa thấy lỗi → chờ countdown rồi thử lại
+            Thread.sleep(60000);
         }
 
         System.out.println("🎯 Kết thúc test resend OTP (tối đa 5 lần hoặc khi có lỗi).");

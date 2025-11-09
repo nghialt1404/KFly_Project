@@ -1,66 +1,66 @@
 package KFly_Project.common.Testcases;
 
-import KFly_Project.common.BookingEngine_Web.LoginPage;
+import KFly_Project.common.BookingEngine_Web.LoginPage_BKEG;
 import KFly_Project.common.BasePage;
 import KFly_Project.common.BaseTest;
 import org.testng.annotations.Test;
 
 public class SignInWitnOTP_test extends BaseTest {
 
-    private LoginPage loginPage;
+    private LoginPage_BKEG loginPageBKEG;
     private BasePage basePage;
 
     @Test
     public void testSigninWithOTPSuccess() throws Exception {
-        loginPage = new LoginPage();
-        loginPage.loginWithOTP_Success();
+        loginPageBKEG = new LoginPage_BKEG();
+        loginPageBKEG.loginWithOTP_Success();
     }
 
     @Test
     void testSigninWithOTP_InvalidEmail() throws Exception {
-        loginPage = new LoginPage();
-        loginPage.loginWithOTP_EmailInvalid();
+        loginPageBKEG = new LoginPage_BKEG();
+        loginPageBKEG.loginWithOTP_EmailInvalid();
 
     }
 
     @Test
     void testSigninWithOTP_EmailNull() throws Exception {
-        loginPage = new LoginPage();
-        loginPage.loginWithOTP_EmailNull();
+        loginPageBKEG = new LoginPage_BKEG();
+        loginPageBKEG.loginWithOTP_EmailNull();
 
     }
 
     @Test
     void testEnterOTPWrong() throws Exception {
-        loginPage = new LoginPage();
-        loginPage.loginWithOTP_enterWrongOTP();
+        loginPageBKEG = new LoginPage_BKEG();
+        loginPageBKEG.loginWithOTP_enterWrongOTP();
     }
 
     @Test
     void testEnterOTPWrong5Times() throws Exception {
-        loginPage = new LoginPage();
-        loginPage.loginWithOTP_enterWrongOTP5Times();
+        loginPageBKEG = new LoginPage_BKEG();
+        loginPageBKEG.loginWithOTP_enterWrongOTP5Times();
 
     }
 
     @Test
     void testResendOTPCode() throws Exception {
-        loginPage = new LoginPage();
-        loginPage.loginWithOTP_clickResendButton();
+        loginPageBKEG = new LoginPage_BKEG();
+        loginPageBKEG.loginWithOTP_clickResendButton();
 
     }
 
     @Test
     void testResendOTPCode5Times() throws Exception {
-        loginPage = new LoginPage();
-        loginPage.loginWithOTP_clickResendButton5Times();
+        loginPageBKEG = new LoginPage_BKEG();
+        loginPageBKEG.loginWithOTP_clickResendButton5Times();
 
     }
 
     @Test
     void testSigninWithOTP_EmailInactive() throws Exception {
-        loginPage = new LoginPage();
-        loginPage.loginWithOTP_EmailInActive();
+        loginPageBKEG = new LoginPage_BKEG();
+        loginPageBKEG.loginWithOTP_EmailInActive();
 
     }
 
