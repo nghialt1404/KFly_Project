@@ -1,8 +1,7 @@
-package KFly_Project.common;
+package KFly_Project_BookingEnginePage.common;
 
 import Base.WebUI;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 
 public class BasePage {
 

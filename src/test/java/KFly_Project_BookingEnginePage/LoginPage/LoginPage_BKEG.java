@@ -1,12 +1,13 @@
-package KFly_Project.common.BookingEngine_Web;
+package KFly_Project_BookingEnginePage.LoginPage;
 
 import Base.WebUI;
-import KFly_Project.common.BasePage;
+import KFly_Project_BookingEnginePage.common.BasePage;
 import jakarta.mail.*;
 import jakarta.mail.internet.MimeMultipart;
 import jakarta.mail.search.SubjectTerm;
-import org.openqa.selenium.*;
-
+import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
+import org.testng.Assert;
 
 import java.util.Properties;
 import java.util.regex.Matcher;
@@ -369,6 +370,22 @@ public class LoginPage_BKEG extends BasePage {
 
 
     }
+    public void SigninWithOTP_OTPExpired10Minutes() throws Exception {
+        navigatetourl();
+        clickButtonSignin();
+        enterEmail("ray@airfeedkh.com");
+        clickButtonContinue();
+
+        WebUI.waitForElementVisible(inputOTP_Signin,10);
+        // Chờ 5 phút
+        Thread.sleep(600000); // 300000 ms = 5 phút
+
+        // Verify
+        WebUI.waitForElementVisible(headerLoginPage,10);
+        boolean headerloginpagedisplay = WebUI.checkElementExist(headerLoginPage);
+        Assert.assertTrue(headerloginpagedisplay,"Not back to login page");
+    }
+
 
     // ********** Method for LoginWithPassword **************
     public void clickButtonContinueWithPassword() {

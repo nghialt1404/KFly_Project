@@ -293,18 +293,18 @@ public class LoginPage_Admin {
 
     }
 
-    public void SigninWithOTP_Wait5Minutes() throws Exception {
+    public void SigninWithOTP_OTPExpried5Minutes() throws Exception {
         navigatetourl();
         enterEmail("ray@airfeedkh.com");
         clickButtonContinue();
 
         WebUI.waitForElementVisible(inputOTP,10);
         // Chờ 5 phút
-        Thread.sleep(310000); // 300000 ms = 5 phút
+        Thread.sleep(300000); // 300000 ms = 5 phút
 
         // Verify
         boolean isEnabled = DriverManager.getDriver().findElement(inputOTP).isEnabled();
-        Assert.assertTrue(isEnabled,"❌ Ô nhập OTP vẫn cho phép nhập sau 5 phút");
+        Assert.assertFalse(isEnabled,"❌ Ô nhập OTP vẫn cho phép nhập sau 5 phút");
     }
 
 

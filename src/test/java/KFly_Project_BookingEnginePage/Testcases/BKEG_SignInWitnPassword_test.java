@@ -1,11 +1,11 @@
-package KFly_Project.common.Testcases;
+package KFly_Project_BookingEnginePage.Testcases;
 
-import KFly_Project.common.BookingEngine_Web.LoginPage_BKEG;
-import KFly_Project.common.BasePage;
-import KFly_Project.common.BaseTest;
+import KFly_Project_BookingEnginePage.LoginPage.LoginPage_BKEG;
+import KFly_Project_BookingEnginePage.common.BasePage;
+import KFly_Project_BookingEnginePage.common.BaseTest;
 import org.testng.annotations.Test;
 
-public class SignInWitnPassword_test extends BaseTest {
+public class BKEG_SignInWitnPassword_test extends BaseTest {
 
     private LoginPage_BKEG loginPageBKEG;
     private BasePage basePage;

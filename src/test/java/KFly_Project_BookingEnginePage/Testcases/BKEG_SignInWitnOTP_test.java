@@ -1,11 +1,11 @@
-package KFly_Project.common.Testcases;
+package KFly_Project_BookingEnginePage.Testcases;
 
-import KFly_Project.common.BookingEngine_Web.LoginPage_BKEG;
-import KFly_Project.common.BasePage;
-import KFly_Project.common.BaseTest;
+import KFly_Project_BookingEnginePage.LoginPage.LoginPage_BKEG;
+import KFly_Project_BookingEnginePage.common.BasePage;
+import KFly_Project_BookingEnginePage.common.BaseTest;
 import org.testng.annotations.Test;
 
-public class SignInWitnOTP_test extends BaseTest {
+public class BKEG_SignInWitnOTP_test extends BaseTest {
 
     private LoginPage_BKEG loginPageBKEG;
     private BasePage basePage;
@@ -17,7 +17,7 @@ public class SignInWitnOTP_test extends BaseTest {
     }
 
     @Test
-    void testSigninWithOTP_InvalidEmail() throws Exception {
+    void testSigninWithOTP_EmailInvalid() throws Exception {
         loginPageBKEG = new LoginPage_BKEG();
         loginPageBKEG.loginWithOTP_EmailInvalid();
 
@@ -61,6 +61,14 @@ public class SignInWitnOTP_test extends BaseTest {
     void testSigninWithOTP_EmailInactive() throws Exception {
         loginPageBKEG = new LoginPage_BKEG();
         loginPageBKEG.loginWithOTP_EmailInActive();
+
+    }
+
+    @Test
+
+    public void testLoginWithOTP_OTPExpired10Minutes() throws Exception {
+        loginPageBKEG = new LoginPage_BKEG();
+        loginPageBKEG.SigninWithOTP_OTPExpired10Minutes();
 
     }
 

@@ -1,10 +1,10 @@
 package KFly_Project_AdminPage.Testcases;
 
-import KFly_Project_AdminPage.BaseTest;
+import KFly_Project_AdminPage.common.BaseTest;
 import KFly_Project_AdminPage.LoginPage.LoginPage_Admin;
 import org.testng.annotations.Test;
 
-public class SigninWithOTP_test extends BaseTest {
+public class AdminPage_SigninWithOTP_test extends BaseTest {
 
     private LoginPage_Admin loginPageAdmin;
 
@@ -51,9 +51,9 @@ public class SigninWithOTP_test extends BaseTest {
 
     @Test
 
-    public void testLoginWithOTP_Wait5Minutes() throws Exception {
+    public void testLoginWithOTP_OTPExpired5Minutes() throws Exception {
         loginPageAdmin = new LoginPage_Admin();
-        loginPageAdmin.SigninWithOTP_Wait5Minutes();
+        loginPageAdmin.SigninWithOTP_OTPExpried5Minutes();
 
     }
 

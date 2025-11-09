@@ -1,4 +1,4 @@
-package KFly_Project_AdminPage;
+package KFly_Project_AdminPage.common;
 
 import keyword.DriverManager;
 import org.openqa.selenium.WebDriver;
