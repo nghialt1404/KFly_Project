@@ -19,7 +19,7 @@ public class AdminPage_SigninWithOTP_test extends BaseTest {
 
     @Test
 
-    public void testLoginWithOTP_InvalidEmail() throws Exception {
+    public void testLoginWithOTP_EmailInvalid() throws Exception {
         loginPageAdmin = new LoginPage_Admin();
         loginPageAdmin.SigninWithOTP_EmailInvalid();
 

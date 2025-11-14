@@ -60,16 +60,11 @@ public class BKEG_ForgotPassword_test extends BaseTest {
 
     }
 
+    @Test
+    void testFGPW_SigninWithOTP_Duration60s() throws Exception {
+        loginPageBKEG = new LoginPage_BKEG();
+        loginPageBKEG.FGPW_loginWithOTP_Duration60s();
 
-
-
-
-
-
-
-
-
-
-
+    }
 
 }

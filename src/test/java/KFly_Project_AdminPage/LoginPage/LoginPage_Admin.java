@@ -9,6 +9,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
 import org.testng.Assert;
 
+import javax.swing.plaf.TableHeaderUI;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -21,7 +22,7 @@ public class LoginPage_Admin {
     int mailPort = 993;
     String mailProtocol = "imaps";
     String mailUsername = "ray@airfeedkh.com";
-    String mailPassword = "hudybwpxtpzklbhj"; // use secure storage, not hard-coded
+    String mailPassword = "ilwakvjpmqqzxkcs"; // use secure storage, not hard-coded
     String subjectKeyword_Signin = "K-FLY - Admin OTP";
     int timeoutSeconds = 60;
 
@@ -39,6 +40,11 @@ public class LoginPage_Admin {
     private By SigninWithOTP_alertEmailInactive = By.xpath("//div[@class='flex items-center justify-center gap-2']/descendant::div//div");
     private By SigninWithGoogle_alertEmailNotExist = By.xpath("//div[@class='flex items-center justify-center gap-2']/descendant::div//div");
 
+    // Element SignInWithGoogle
+    private By buttonLoginWithGoogle = By.xpath("//button[normalize-space()='Login with Google']");
+    private By inputEmail_LoginWithGoogle = By.xpath("//div[@class='aCsJod oJeWuf']/descendant::div//input[@type='email']");
+    private By inputPassword_LoginWithGoogle = By.xpath("//div[@class='aXBtI Wic03c']/descendant::div/input[@type='password']");
+    private By buttonNext_LoginWithGoogle = By.xpath("//span[normalize-space()='Next']");
 
     // *****METHOD *******
     public void navigatetourl() {
@@ -240,8 +246,9 @@ public class LoginPage_Admin {
         navigatetourl();
         enterEmail("ray@airfeedkh.com");
         clickButtonContinue();
+        Thread.sleep(3000);
 
-        for (int i = 0; i <= 5; i++) {
+        for (int i = 1; i <= 5; i++) {
             WebUI.setText(inputOTP, "439143");
             WebUI.waitForElementToBeClickAble(buttonVerify);
             WebUI.clickElement(buttonVerify);
@@ -307,6 +314,55 @@ public class LoginPage_Admin {
         Assert.assertFalse(isEnabled,"❌ Ô nhập OTP vẫn cho phép nhập sau 5 phút");
     }
 
+    public void SigninWithGoogle_Success() throws InterruptedException {
+        navigatetourl();
+        WebUI.clickElement(buttonLoginWithGoogle);
+        WebUI.switchToWindowPopupByIndex(1);
+        WebUI.setText(inputEmail_LoginWithGoogle,"ray@airfeedkh.com");
+        WebUI.clickElement(buttonNext_LoginWithGoogle);
+        WebUI.setText(inputPassword_LoginWithGoogle,"@AFray123!@#");
+        WebUI.clickElement(buttonNext_LoginWithGoogle);
 
+        // Verify
+        WebUI.switchToWindowPopupByIndex(0);
+        WebUI.waitForElementVisible(alertLoginSuccess,10);
+        String alertloginSuccess = WebUI.getElementText(alertLoginSuccess);
+        Assert.assertEquals(alertloginSuccess,"Welcome back, System Administrator! Please wait while we redirect you to the homepage.","Message not match");
+
+    }
+
+    public void SigninWithGoogle_EmailInActive() throws InterruptedException {
+        navigatetourl();
+        WebUI.clickElement(buttonLoginWithGoogle);
+        WebUI.switchToWindowPopupByIndex(1);
+        WebUI.setText(inputEmail_LoginWithGoogle,"nghialt1404@gmail.com");
+        WebUI.clickElement(buttonNext_LoginWithGoogle);
+        WebUI.setText(inputPassword_LoginWithGoogle,"ltn1404@");
+        WebUI.clickElement(buttonNext_LoginWithGoogle);
+
+        // Verify
+        WebUI.switchToWindowPopupByIndex(0);
+        WebUI.waitForElementVisible(SigninWithOTP_alertEmailInactive);
+        String alertloginSuccess = WebUI.getElementText(SigninWithOTP_alertEmailInactive);
+        Assert.assertEquals(alertloginSuccess,"Welcome back, System Administrator! Please wait while we redirect you to the homepage.","Message not match");
+
+    }
+
+    public void SigninWithGoogle_EmailNotExist() throws InterruptedException {
+        navigatetourl();
+        WebUI.clickElement(buttonLoginWithGoogle);
+        WebUI.switchToWindowPopupByIndex(1);
+        WebUI.setText(inputEmail_LoginWithGoogle,"trungnghia14041994@gmail.com");
+        WebUI.clickElement(buttonNext_LoginWithGoogle);
+        WebUI.setText(inputPassword_LoginWithGoogle,"ltn1404@");
+        WebUI.clickElement(buttonNext_LoginWithGoogle);
+
+        // Verify
+        WebUI.switchToWindowPopupByIndex(0);
+        WebUI.waitForElementVisible(SigninWithGoogle_alertEmailNotExist);
+        String alertloginSuccess = WebUI.getElementText(SigninWithGoogle_alertEmailNotExist);
+        Assert.assertEquals(alertloginSuccess,"Welcome back, System Administrator! Please wait while we redirect you to the homepage.","Message not match");
+
+    }
 }
 

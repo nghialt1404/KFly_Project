@@ -72,5 +72,13 @@ public class BKEG_SignInWitnOTP_test extends BaseTest {
 
     }
 
+    @Test
+
+    public void testLoginWithOTP_FGPW_Duration60s() throws Exception {
+        loginPageBKEG = new LoginPage_BKEG();
+        loginPageBKEG.loginWithOTP_FGPW_Duration60s();
+
+    }
+
 
 }

@@ -8,11 +8,14 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 
+import java.sql.Driver;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.util.Set;
 
 public class WebUI {
 
@@ -452,6 +455,16 @@ public class WebUI {
         Assert.assertTrue(check, message);
     }
 
+    public static void switchToWindowPopupByIndex(int index) {
+        List<String> windowHandles = new ArrayList<>(DriverManager.getDriver().getWindowHandles());
+
+        if (index < 0 || index >= windowHandles.size()) {
+            throw new IllegalArgumentException("❌ Index ngoài phạm vi. Tổng số cửa sổ: " + windowHandles.size());
+        }
+
+        DriverManager.getDriver().switchTo().window(windowHandles.get(index));
+        System.out.println("✅ Đã chuyển sang cửa sổ thứ " + index);
+    }
 
 }
 
