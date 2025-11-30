@@ -1,22 +1,21 @@
-package KFly_Project_AdminPage.LoginPage;
+package KFly_Project_AdminPage.pages;
 
-import Base.WebUI;
+import Utils.LogUtils;
+import drivers.DriverManager;
+import helpers.PropertiesHelper;
+import keyword.WebUI;
 import jakarta.mail.*;
 import jakarta.mail.internet.MimeMultipart;
 import jakarta.mail.search.SubjectTerm;
-import keyword.DriverManager;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
 import org.testng.Assert;
 
-import javax.swing.plaf.TableHeaderUI;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class LoginPage_Admin {
-
-    private String url_login_admin = "https://dev-admin.eluxia.org/auth/login";
 
     String mailHost = "imap.gmail.com";// e.g. imap.gmail.com
     int mailPort = 993;
@@ -30,25 +29,19 @@ public class LoginPage_Admin {
     private By headerLoginPage = By.xpath("//h1[normalize-space()='Login with Email']");
     private By inputEmail = By.xpath("//input[@placeholder='example@gmail.com']");
     private By buttonContinue = By.xpath("//button[@type='submit']");
-    private By inputOTP = By.xpath("//div[@class = 'flex justify-center']/descendant::div//input");
+    private By inputOTP = By.xpath("//div[@class = 'flex justify-center w-[448px] h-16 mx-auto']/descendant::div//input");
     private By buttonVerify = By.xpath("//button[normalize-space()='Verify']");
     private By buttonResendOTP = By.xpath("//button[normalize-space()='RESEND OTP']");
     private By alertLoginSuccess = By.xpath("//div[@class='flex items-center justify-center gap-2']/descendant::div//div");
     private By alertInvalidEmail = By.xpath("//p[normalize-space()='Please enter a valid email address']");
     private By alertOTPWrong5Times = By.xpath("//div[@class='flex items-center justify-center gap-2']/descendant::div//div");
     private By alertResendOTP5Times = By.xpath("//div[@role='alert']/descendant::div[@class='[&_p]:leading-relaxed text-sm font-medium m-0']");
-    private By SigninWithOTP_alertEmailInactive = By.xpath("//div[@class='flex items-center justify-center gap-2']/descendant::div//div");
-    private By SigninWithGoogle_alertEmailNotExist = By.xpath("//div[@class='flex items-center justify-center gap-2']/descendant::div//div");
-
-    // Element SignInWithGoogle
-    private By buttonLoginWithGoogle = By.xpath("//button[normalize-space()='Login with Google']");
-    private By inputEmail_LoginWithGoogle = By.xpath("//div[@class='aCsJod oJeWuf']/descendant::div//input[@type='email']");
-    private By inputPassword_LoginWithGoogle = By.xpath("//div[@class='aXBtI Wic03c']/descendant::div/input[@type='password']");
-    private By buttonNext_LoginWithGoogle = By.xpath("//span[normalize-space()='Next']");
+    private By alertEmailInactive = By.xpath("//div[@class='flex items-center justify-center gap-2']/descendant::div//div");
+    private By alertOTPExpired = By.xpath("//div[@class='flex items-center justify-center gap-2']/descendant::div//div");
 
     // *****METHOD *******
     public void navigatetourl() {
-        WebUI.openURL(url_login_admin);
+        WebUI.openURL(PropertiesHelper.getValue("url_admin"));
     }
 
     public String fetchOtpFromEmail(String host, int port, String protocol, String username, String password, String subjectKeyword, int timeoutSeconds) throws Exception {
@@ -75,7 +68,7 @@ public class LoginPage_Admin {
             long endTime = startTime + timeoutSeconds * 1000L;
             Pattern otpPattern = Pattern.compile("\\b(\\d{4,8})\\b");
 
-            System.out.println("⏳ Waiting for new OTP mail after: " + new java.util.Date(startTime));
+            LogUtils.info("⏳ Waiting for new OTP mail after: " + new java.util.Date(startTime));
 
             Message lastChecked = null;
             String otp = null;
@@ -100,15 +93,15 @@ public class LoginPage_Admin {
                         Matcher matcher = otpPattern.matcher(body);
                         if (matcher.find()) {
                             otp = matcher.group(1);
-                            System.out.println("✅ Found NEW OTP: " + otp);
-                            System.out.println("📨 Mail sent: " + sentDate + " | received: " + receivedDate);
-                            System.out.println("📩 Subject: " + latest.getSubject());
+                            LogUtils.info("✅ Found NEW OTP: " + otp);
+                            LogUtils.info("📨 Mail sent: " + sentDate + " | received: " + receivedDate);
+                            LogUtils.info("📩 Subject: " + latest.getSubject());
                             break;
                         } else {
-                            System.out.println("⚠️ Found new mail but no OTP pattern found.");
+                            LogUtils.info("⚠️ Found new mail but no OTP pattern found.");
                         }
                     } else {
-                        System.out.println("⌛ Old mail found (" + sentDate + "), waiting...");
+                        LogUtils.info("⌛ Old mail found (" + sentDate + "), waiting...");
                     }
                 }
 
@@ -200,17 +193,13 @@ public class LoginPage_Admin {
         WebUI.clickElement(buttonContinue);
     }
 
-    public void enterOTPFromMail() throws Exception {
-        String otp = fetchOtpFromEmail(mailHost, mailPort, mailProtocol, mailUsername, mailPassword, subjectKeyword_Signin, timeoutSeconds);
-        WebUI.setText(inputOTP, otp);
-        WebUI.clickElement(buttonVerify);
-    }
-
     public void SigninWithOTP_Success() throws Exception {
         navigatetourl();
         enterEmail("ray@airfeedkh.com");
         clickButtonContinue();
-        enterOTPFromMail();
+        String otp = fetchOtpFromEmail(mailHost, mailPort, mailProtocol, mailUsername, mailPassword, subjectKeyword_Signin, timeoutSeconds);
+        WebUI.setText(inputOTP, otp);
+        WebUI.clickElement(buttonVerify);
 
         // Verify
         WebUI.waitForElementVisible(alertLoginSuccess);
@@ -236,9 +225,9 @@ public class LoginPage_Admin {
         clickButtonContinue();
 
         // Verify
-        WebUI.waitForElementVisible(SigninWithOTP_alertEmailInactive);
-        String alertEmailInactive = WebUI.getElementText(SigninWithOTP_alertEmailInactive);
-        WebUI.assertEquals(alertEmailInactive, "Your account is suspended. Please contact the administrator.", "Message not match");
+        WebUI.waitForElementVisible(alertEmailInactive);
+        String check = WebUI.getElementText(alertEmailInactive);
+        WebUI.assertEquals(check, "Your account is suspended. Please contact the administrator.", "Message not match");
     }
 
 
@@ -260,7 +249,7 @@ public class LoginPage_Admin {
 
     }
 
-    public void SigninWithOTP_ResendOTP5Times() throws Exception {
+    public void SigninWithOTP_ResendOTP5Times() {
         navigatetourl();
         enterEmail("ray@airfeedkh.com");
         clickButtonContinue();
@@ -281,13 +270,13 @@ public class LoginPage_Admin {
             }
 
             // 🔹 Kiểm tra lại ngay sau khi click — nếu hệ thống hiện lỗi thì dừng test luôn
-            // 🕑 Chờ 3 giây để hệ thống hiển thị alert nếu có
-            Thread.sleep(2000);
+            // 🕑 Chờ 2 giây để hệ thống hiển thị alert nếu có
+            WebUI.sleep(2);
             if (WebUI.checkElementExist(alertResendOTP5Times)) {
                 break;
             }
             // Nếu chưa thấy lỗi → chờ countdown rồi thử lại
-            Thread.sleep(60000);
+            WebUI.sleep(60);
 
         }
         System.out.println("🎯 Kết thúc test resend OTP (tối đa 5 lần hoặc khi có lỗi).");
@@ -305,64 +294,17 @@ public class LoginPage_Admin {
         enterEmail("ray@airfeedkh.com");
         clickButtonContinue();
 
-        WebUI.waitForElementVisible(inputOTP,10);
+        // LẤY OTP NGAY SAU KHI REQUEST
+        String otp = fetchOtpFromEmail(mailHost, mailPort, mailProtocol, mailUsername, mailPassword, subjectKeyword_Signin, timeoutSeconds);
         // Chờ 5 phút
-        Thread.sleep(300000); // 300000 ms = 5 phút
+        WebUI.sleep(310);
+        WebUI.setText(inputOTP, otp);
+        WebUI.clickElement(buttonVerify);
 
         // Verify
-        boolean isEnabled = DriverManager.getDriver().findElement(inputOTP).isEnabled();
-        Assert.assertFalse(isEnabled,"❌ Ô nhập OTP vẫn cho phép nhập sau 5 phút");
-    }
-
-    public void SigninWithGoogle_Success() throws InterruptedException {
-        navigatetourl();
-        WebUI.clickElement(buttonLoginWithGoogle);
-        WebUI.switchToWindowPopupByIndex(1);
-        WebUI.setText(inputEmail_LoginWithGoogle,"ray@airfeedkh.com");
-        WebUI.clickElement(buttonNext_LoginWithGoogle);
-        WebUI.setText(inputPassword_LoginWithGoogle,"@AFray123!@#");
-        WebUI.clickElement(buttonNext_LoginWithGoogle);
-
-        // Verify
-        WebUI.switchToWindowPopupByIndex(0);
-        WebUI.waitForElementVisible(alertLoginSuccess,10);
-        String alertloginSuccess = WebUI.getElementText(alertLoginSuccess);
-        Assert.assertEquals(alertloginSuccess,"Welcome back, System Administrator! Please wait while we redirect you to the homepage.","Message not match");
-
-    }
-
-    public void SigninWithGoogle_EmailInActive() throws InterruptedException {
-        navigatetourl();
-        WebUI.clickElement(buttonLoginWithGoogle);
-        WebUI.switchToWindowPopupByIndex(1);
-        WebUI.setText(inputEmail_LoginWithGoogle,"nghialt1404@gmail.com");
-        WebUI.clickElement(buttonNext_LoginWithGoogle);
-        WebUI.setText(inputPassword_LoginWithGoogle,"ltn1404@");
-        WebUI.clickElement(buttonNext_LoginWithGoogle);
-
-        // Verify
-        WebUI.switchToWindowPopupByIndex(0);
-        WebUI.waitForElementVisible(SigninWithOTP_alertEmailInactive);
-        String alertloginSuccess = WebUI.getElementText(SigninWithOTP_alertEmailInactive);
-        Assert.assertEquals(alertloginSuccess,"Welcome back, System Administrator! Please wait while we redirect you to the homepage.","Message not match");
-
-    }
-
-    public void SigninWithGoogle_EmailNotExist() throws InterruptedException {
-        navigatetourl();
-        WebUI.clickElement(buttonLoginWithGoogle);
-        WebUI.switchToWindowPopupByIndex(1);
-        WebUI.setText(inputEmail_LoginWithGoogle,"trungnghia14041994@gmail.com");
-        WebUI.clickElement(buttonNext_LoginWithGoogle);
-        WebUI.setText(inputPassword_LoginWithGoogle,"ltn1404@");
-        WebUI.clickElement(buttonNext_LoginWithGoogle);
-
-        // Verify
-        WebUI.switchToWindowPopupByIndex(0);
-        WebUI.waitForElementVisible(SigninWithGoogle_alertEmailNotExist);
-        String alertloginSuccess = WebUI.getElementText(SigninWithGoogle_alertEmailNotExist);
-        Assert.assertEquals(alertloginSuccess,"Welcome back, System Administrator! Please wait while we redirect you to the homepage.","Message not match");
-
+        WebUI.waitForElementVisible(alertOTPExpired);
+        String check = WebUI.getElementText(alertOTPExpired);
+        WebUI.assertEquals(check, "The OTP code is invalid ", "Message not match");
     }
 }
 

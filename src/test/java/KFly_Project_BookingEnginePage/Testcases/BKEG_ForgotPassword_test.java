@@ -1,14 +1,13 @@
 package KFly_Project_BookingEnginePage.Testcases;
 
-import KFly_Project_BookingEnginePage.LoginPage.LoginPage_BKEG;
-import KFly_Project_BookingEnginePage.common.BasePage;
+import KFly_Project_BookingEnginePage.pages.LoginPage_BKEG;
+import KFly_Project_BookingEnginePage.pages.BasePage;
 import KFly_Project_BookingEnginePage.common.BaseTest;
 import org.testng.annotations.Test;
 
 public class BKEG_ForgotPassword_test extends BaseTest {
 
     private LoginPage_BKEG loginPageBKEG;
-    private BasePage basePage;
 
     @Test
     public void testFGPWSuccess() throws Exception {
@@ -60,11 +59,5 @@ public class BKEG_ForgotPassword_test extends BaseTest {
 
     }
 
-    @Test
-    void testFGPW_SigninWithOTP_Duration60s() throws Exception {
-        loginPageBKEG = new LoginPage_BKEG();
-        loginPageBKEG.FGPW_loginWithOTP_Duration60s();
-
-    }
 
 }

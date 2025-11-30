@@ -1,7 +1,6 @@
-package keyword;
+package drivers;
 
 import org.openqa.selenium.WebDriver;
-
 
 public class DriverManager {
 

@@ -3,7 +3,7 @@
 <suite name="Suite Demo Parallel Testing By Module Methods" verbose="1">
     <test name="SignInWithOTP Test" parallel="methods" thread-count="4">
         <classes>
-            <class name="KFly_Project_AdminPage.Testcases.AdminPage_SigninWithOTP_test"/>
+            <class name="KFly_Project_AdminPage.testcases.AdminPage_SigninWithOTP_test"/>
         </classes>
     </test>
 </suite>

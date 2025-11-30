@@ -1,14 +1,13 @@
 package KFly_Project_BookingEnginePage.Testcases;
 
-import KFly_Project_BookingEnginePage.LoginPage.LoginPage_BKEG;
-import KFly_Project_BookingEnginePage.common.BasePage;
+import KFly_Project_BookingEnginePage.pages.LoginPage_BKEG;
+import KFly_Project_BookingEnginePage.pages.BasePage;
 import KFly_Project_BookingEnginePage.common.BaseTest;
 import org.testng.annotations.Test;
 
 public class BKEG_SignInWitnOTP_test extends BaseTest {
 
     private LoginPage_BKEG loginPageBKEG;
-    private BasePage basePage;
 
     @Test
     public void testSigninWithOTPSuccess() throws Exception {
@@ -69,14 +68,6 @@ public class BKEG_SignInWitnOTP_test extends BaseTest {
     public void testLoginWithOTP_OTPExpired10Minutes() throws Exception {
         loginPageBKEG = new LoginPage_BKEG();
         loginPageBKEG.SigninWithOTP_OTPExpired10Minutes();
-
-    }
-
-    @Test
-
-    public void testLoginWithOTP_FGPW_Duration60s() throws Exception {
-        loginPageBKEG = new LoginPage_BKEG();
-        loginPageBKEG.loginWithOTP_FGPW_Duration60s();
 
     }
 

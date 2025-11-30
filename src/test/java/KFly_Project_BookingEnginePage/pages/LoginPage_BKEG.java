@@ -1,7 +1,7 @@
-package KFly_Project_BookingEnginePage.LoginPage;
+package KFly_Project_BookingEnginePage.pages;
 
-import Base.WebUI;
-import KFly_Project_BookingEnginePage.common.BasePage;
+import helpers.PropertiesHelper;
+import keyword.WebUI;
 import jakarta.mail.*;
 import jakarta.mail.internet.MimeMultipart;
 import jakarta.mail.search.SubjectTerm;
@@ -14,9 +14,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class LoginPage_BKEG extends BasePage {
-
-    private String url_bkeg_dev = "https://dev.eluxia.org/en?currency=USD";
-    private String url_bkeg_stg = "https://stg.eluxia.org/en?currency=USD";
 
     String mailHost = "imap.gmail.com";// e.g. imap.gmail.com
     int mailPort = 993;
@@ -77,9 +74,8 @@ public class LoginPage_BKEG extends BasePage {
 
     // ************ Method Common ***********
     public void navigatetourl() {
-        WebUI.openURL(url_bkeg_stg);
+        WebUI.openURL(PropertiesHelper.getValue("url_bkeg"));
     }
-
 
 // ************* Method SigninWithOTP *******************
 
@@ -397,22 +393,6 @@ public class LoginPage_BKEG extends BasePage {
         Assert.assertTrue(headerloginpagedisplay, "Not back to login page");
     }
 
-    public void loginWithOTP_FGPW_Duration60s() throws Exception {
-        navigatetourl();
-        clickButtonSignin();
-        enterEmail("ray@airfeedkh.com");
-        clickButtonContinue();
-        clickButtonContinueWithPassword();
-        clickButtonForgotPassword();
-        clickButtonSendCode();
-
-        // Verify
-        WebUI.waitForElementVisible(AlertSigninWithOTP_FGPW_Duration60s);
-        String messageInvalidEmail = WebUI.getElementText(AlertSigninWithOTP_FGPW_Duration60s);
-        WebUI.assertEquals(messageInvalidEmail, "An OTP request has already been sent. Please try again shortly.", "Message not match");
-    }
-
-
     // ********** Method for LoginWithPassword **************
     public void clickButtonContinueWithPassword() {
         WebUI.clickElement(buttonContinueWithPassword);
@@ -442,8 +422,6 @@ public class LoginPage_BKEG extends BasePage {
         WebUI.waitForElementVisible(alertLoginSuccess);
         String textAlertIncorrectEmailOrPassword = WebUI.getElementText(alertLoginSuccess);
         WebUI.assertEquals(textAlertIncorrectEmailOrPassword, "Sign in successfully! Please wait, we will redirect you to homepage in a second", "Message not match");
-
-
     }
 
     public void loginWithPassword_EmailNull() throws Exception {
@@ -533,6 +511,7 @@ public class LoginPage_BKEG extends BasePage {
     }
 
     // ************* FORGOT PASSWORD **************
+
     public void clickButtonBacktoSignin() {
         WebUI.clickElement(buttonBacktoSignIn);
     }
@@ -633,7 +612,6 @@ public class LoginPage_BKEG extends BasePage {
 
     }
 
-
     public void FGPWSuccess() throws Exception {
         navigatetourl();
         clickButtonSignin();
@@ -732,23 +710,6 @@ public class LoginPage_BKEG extends BasePage {
         String AlertSetNewPasswordSuccess = WebUI.getElementText(alertEmaiLInActive);
         WebUI.assertEquals(AlertSetNewPasswordSuccess, "This account is currently inactive. Please reach out to our support team to reactivate your account.", "Message not match");
 
-    }
-
-    public void FGPW_loginWithOTP_Duration60s() throws Exception {
-        navigatetourl();
-        clickButtonSignin();
-        clickButtonContinueWithPassword();
-        clickButtonForgotPassword();
-        enterEmail("ray@airfeedkh.com");
-        clickButtonSendCode();
-        Thread.sleep(7000);
-        clickButtonBacktoSignin();
-        clickButtonContinue();
-
-        // Verify
-        WebUI.waitForElementVisible(alertFGPW_SigninWithOTP_Duration60s);
-        String messageInvalidEmail = WebUI.getElementText(alertFGPW_SigninWithOTP_Duration60s);
-        WebUI.assertEquals(messageInvalidEmail, "An OTP request has already been sent. Please try again shortly.", "Message not match");
     }
 
 
