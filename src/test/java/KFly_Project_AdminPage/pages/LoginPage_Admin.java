@@ -37,7 +37,7 @@ public class LoginPage_Admin {
     private By alertOTPWrong5Times = By.xpath("//div[@class='flex items-center justify-center gap-2']/descendant::div//div");
     private By alertResendOTP5Times = By.xpath("//div[@role='alert']/descendant::div[@class='[&_p]:leading-relaxed text-sm font-medium m-0']");
     private By alertEmailInactive = By.xpath("//div[@class='flex items-center justify-center gap-2']/descendant::div//div");
-    private By alertOTPExpired = By.xpath("//div[@class='flex items-center justify-center gap-2']/descendant::div//div");
+    private By alertOTPExpired = By.xpath("//div[@role='alert']");
 
     // *****METHOD *******
     public void navigatetourl() {
@@ -262,10 +262,10 @@ public class LoginPage_Admin {
                 WebUI.waitForElementToBeClickAble(buttonResendOTP, 10);
                 WebUI.clickElement(buttonResendOTP);
 
-                System.out.println("✅ Click Resend OTP lần " + i + " thành công");
+                LogUtils.info("✅ Click Resend OTP lần " + i + " thành công");
 
             } catch (TimeoutException e) {
-                System.out.println("⚠️ Timeout ở lần " + i);
+                LogUtils.info("⚠️ Timeout ở lần " + i);
                 break;
             }
 
@@ -279,13 +279,13 @@ public class LoginPage_Admin {
             WebUI.sleep(60);
 
         }
-        System.out.println("🎯 Kết thúc test resend OTP (tối đa 5 lần hoặc khi có lỗi).");
+        LogUtils.info("🎯 Kết thúc test resend OTP (tối đa 5 lần hoặc khi có lỗi).");
 
         // Verify
 
         WebUI.waitForElementVisible(alertResendOTP5Times);
         String alertResendOTP = WebUI.getElementText(alertResendOTP5Times);
-        WebUI.assertEquals(alertResendOTP, "You've requested too many OTP codes. Please wait for 59 minutes before trying again.", "Message not match");
+        WebUI.assertEquals(alertResendOTP, "You've requested too many OTP codes. Please wait for 60 minutes before trying again.", "Message not match");
 
     }
 
@@ -304,7 +304,7 @@ public class LoginPage_Admin {
         // Verify
         WebUI.waitForElementVisible(alertOTPExpired);
         String check = WebUI.getElementText(alertOTPExpired);
-        WebUI.assertEquals(check, "The OTP code is invalid ", "Message not match");
+        WebUI.assertEquals(check, "The OTP code is invalid. Please re-enter or request a new OTP.", "Message not match");
     }
 }
 

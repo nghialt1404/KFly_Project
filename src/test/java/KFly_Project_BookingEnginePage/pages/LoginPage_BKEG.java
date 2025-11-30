@@ -45,9 +45,11 @@ public class LoginPage_BKEG extends BasePage {
     private By alertInvalidEmail_SigninWithPassword = By.xpath("//p[normalize-space()='Enter a valid email']");
     private By alertIncorrectEmailOrPassword = By.xpath("//div[@class='w-full max-w-md']/descendant::div//span");
     private By buttonSignin = By.xpath("//button[normalize-space()='Sign in']");
+    private By alertLoginPasswordSuccess = By.xpath("//span[normalize-space()='Hi, ray']");
     private By alertEmailNull = By.xpath("//p[normalize-space()='Email is required']");
     private By alertPasswordNull = By.xpath("//p[normalize-space()='Password is required']");
     private By alertSigninWithPasswordSuccess = By.xpath("//div[@class='w-full max-w-md']/descendant::div//span");
+
 
     // Forgot Password
     private By buttonForgetPassword = By.xpath("//button[normalize-space()='Forgot Password?']");
@@ -228,19 +230,16 @@ public class LoginPage_BKEG extends BasePage {
         }
     }
 
-    public void enterOTPFromMail() throws Exception {
-        String otp = fetchOtpFromEmail(mailHost, mailPort, mailProtocol, mailUsername, mailPassword, subjectKeyword_Signin, timeoutSeconds);
-        WebUI.setText(inputOTP_Signin, otp);
-        WebUI.clickElement(buttonContinue_SigninOTP);
-    }
-
 
     public void loginWithOTP_Success() throws Exception {
         navigatetourl();
         clickButtonSignin();
         enterEmail("ray@airfeedkh.com");
         clickButtonContinue();
-        enterOTPFromMail();
+
+        String otp = fetchOtpFromEmail(mailHost, mailPort, mailProtocol, mailUsername, mailPassword, subjectKeyword_FGPW, timeoutSeconds);
+        WebUI.setText(inputOTP_Signin, otp);
+        WebUI.clickElement(buttonContinueForgotPassword);
 
         // Verify
         WebUI.waitForElementVisible(alertLoginSuccess);
@@ -308,25 +307,7 @@ public class LoginPage_BKEG extends BasePage {
 
     }
 
-
-    public void loginWithOTP_clickResendButton() throws Exception {
-        navigatetourl();
-        clickButtonSignin();
-        enterEmail("ray@airfeedkh.com");
-        clickButtonContinue();
-        WebUI.waitForElementToBeClickAble(buttonResendOTPCode, 70);
-        WebUI.clickElement(buttonResendOTPCode);
-        enterOTPFromMail();
-
-        // Verify
-        WebUI.waitForElementVisible(alertLoginSuccess);
-        String messageLoginSuccess = WebUI.getElementText(alertLoginSuccess);
-        WebUI.assertEquals(messageLoginSuccess,
-                "Sign in successfully! Please wait, we will redirect you to homepage in a second", "Message not match");
-
-    }
-
-    public void loginWithOTP_clickResendButton5Times() throws Exception {
+    public void loginWithOTP_clickResendButton5Times() {
         navigatetourl();
         clickButtonSignin();
         enterEmail("ray@airfeedkh.com");
@@ -347,12 +328,12 @@ public class LoginPage_BKEG extends BasePage {
 
             // 🔹 Kiểm tra lại ngay sau khi click — nếu hệ thống hiện lỗi thì dừng test luôn
             // 🕑 Chờ 3 giây để hệ thống hiển thị alert nếu có
-            Thread.sleep(2000);
+            WebUI.sleep(2);
             if (WebUI.checkElementExist(alertResendOTP5Times)) {
                 break;
             }
             // Nếu chưa thấy lỗi → chờ countdown rồi thử lại
-            Thread.sleep(60000);
+            WebUI.sleep(60);
         }
 
         System.out.println("🎯 Kết thúc test resend OTP (tối đa 5 lần hoặc khi có lỗi).");
@@ -374,10 +355,9 @@ public class LoginPage_BKEG extends BasePage {
         String AlertSetNewPasswordSuccess = WebUI.getElementText(SigninWithOTP_alertEmailInactive);
         WebUI.assertEquals(AlertSetNewPasswordSuccess, "This account is currently inactive. Please reach out to our support team to reactivate your account.", "Message not match");
 
-
     }
 
-    public void SigninWithOTP_OTPExpired10Minutes() throws Exception {
+    public void SigninWithOTP_OTPExpired10Minutes() {
         navigatetourl();
         clickButtonSignin();
         enterEmail("ray@airfeedkh.com");
@@ -385,7 +365,7 @@ public class LoginPage_BKEG extends BasePage {
 
         WebUI.waitForElementVisible(inputOTP_Signin, 10);
         // Chờ 10 phút
-        Thread.sleep(600000);
+        WebUI.sleep(600);
 
         // Verify
         WebUI.waitForElementVisible(headerLoginPage, 10);
@@ -393,7 +373,8 @@ public class LoginPage_BKEG extends BasePage {
         Assert.assertTrue(headerloginpagedisplay, "Not back to login page");
     }
 
-    // ********** Method for LoginWithPassword **************
+    // ********** METHOD FOR LOGIN PASSWORD **************
+
     public void clickButtonContinueWithPassword() {
         WebUI.clickElement(buttonContinueWithPassword);
     }
@@ -419,9 +400,9 @@ public class LoginPage_BKEG extends BasePage {
         WebUI.clickElement(buttonSignin);
 
         // Verify
-        WebUI.waitForElementVisible(alertLoginSuccess);
-        String textAlertIncorrectEmailOrPassword = WebUI.getElementText(alertLoginSuccess);
-        WebUI.assertEquals(textAlertIncorrectEmailOrPassword, "Sign in successfully! Please wait, we will redirect you to homepage in a second", "Message not match");
+        WebUI.waitForPageLoaded();
+        WebUI.waitForElementVisible(alertLoginPasswordSuccess );
+        Assert.assertTrue(WebUI.checkElementExist(alertLoginPasswordSuccess, 5, 1000),"Login with password not success");
     }
 
     public void loginWithPassword_EmailNull() throws Exception {
@@ -542,12 +523,6 @@ public class LoginPage_BKEG extends BasePage {
         WebUI.clickElement(buttonConfirm);
     }
 
-    public void enterOTPFromMail_FGPW() throws Exception {
-        String otp = fetchOtpFromEmail(mailHost, mailPort, mailProtocol, mailUsername, mailPassword, subjectKeyword_FGPW, timeoutSeconds);
-        WebUI.setText(inputOTP_Signin, otp);
-        WebUI.clickElement(buttonContinueForgotPassword);
-    }
-
     public void FGPW_clickResendButton5Times() throws Exception {
         navigatetourl();
         clickButtonSignin();
@@ -619,7 +594,9 @@ public class LoginPage_BKEG extends BasePage {
         clickButtonForgotPassword();
         enterEmail("ray@airfeedkh.com");
         clickButtonSendCode();
-        enterOTPFromMail_FGPW();
+        String otp = fetchOtpFromEmail(mailHost, mailPort, mailProtocol, mailUsername, mailPassword, subjectKeyword_FGPW, timeoutSeconds);
+        WebUI.setText(inputOTP_Signin, otp);
+        WebUI.clickElement(buttonContinueForgotPassword);
 
         enterNewPassword("raygay11$");
         enterConfirmNewPassword("raygay11$");
@@ -682,7 +659,10 @@ public class LoginPage_BKEG extends BasePage {
         clickButtonForgotPassword();
         enterEmail("ray@airfeedkh.com");
         clickButtonSendCode();
-        enterOTPFromMail_FGPW();
+
+        String otp = fetchOtpFromEmail(mailHost, mailPort, mailProtocol, mailUsername, mailPassword, subjectKeyword_FGPW, timeoutSeconds);
+        WebUI.setText(inputOTP_Signin, otp);
+        WebUI.clickElement(buttonContinueForgotPassword);
 
         enterNewPassword("raygay11$");
         enterConfirmNewPassword("raygay11#");
