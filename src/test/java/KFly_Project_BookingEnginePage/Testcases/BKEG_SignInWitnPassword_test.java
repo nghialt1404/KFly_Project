@@ -16,7 +16,7 @@ public class BKEG_SignInWitnPassword_test extends BaseTest {
     }
 
     @Test(priority = 2)
-    void testSigninWithPassword_InvalidEmail() throws Exception {
+    void testSigninWithPassword_EmailInvalid() throws Exception {
         loginPageBKEG = new LoginPage_BKEG();
         loginPageBKEG.loginWithPassword_InvalidEmail();
     }
@@ -34,14 +34,14 @@ public class BKEG_SignInWitnPassword_test extends BaseTest {
     }
 
     @Test(priority = 5)
-    void testSigninWithPassword_IncorrectMail() throws Exception {
+    void testSigninWithPassword_EMailIncorrect() throws Exception {
         loginPageBKEG = new LoginPage_BKEG();
         loginPageBKEG.loginWithPassword_IncorrectEmail();
 
     }
 
     @Test(priority = 6)
-    void testSigninWithPassword_IncorrectPassword() throws Exception {
+    void testSigninWithPassword_PasswordIncorrect() throws Exception {
         loginPageBKEG = new LoginPage_BKEG();
         loginPageBKEG.loginWithPassword_IncorrectPassword();
     }

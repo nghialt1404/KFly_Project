@@ -34,16 +34,18 @@ public class BKEG_ForgotPassword_test extends BaseTest {
     }
 
     @Test
+    void testFGPW_EmailInActive() throws Exception {
+        loginPageBKEG = new LoginPage_BKEG();
+        loginPageBKEG.FGPW_EmailInActive();
+
+    }
+
+    @Test
     public void FGPW_PasswordNotMatch() throws Exception {
         loginPageBKEG = new LoginPage_BKEG();
         loginPageBKEG.FGPW_PasswordNotMatch();
     }
 
-    @Test
-    public void FGPW_ResendOTP5Times() throws Exception {
-        loginPageBKEG = new LoginPage_BKEG();
-        loginPageBKEG.FGPW_clickResendButton5Times();
-    }
 
     @Test
     void testFGPW_enterWrongOTP5Times() throws Exception {
@@ -53,11 +55,12 @@ public class BKEG_ForgotPassword_test extends BaseTest {
     }
 
     @Test
-    void testFGPW_EmailInActive() throws Exception {
+    public void FGPW_ResendOTP5Times() throws Exception {
         loginPageBKEG = new LoginPage_BKEG();
-        loginPageBKEG.FGPW_EmailInActive();
-
+        loginPageBKEG.FGPW_clickResendButton5Times();
     }
+
+
 
 
 }

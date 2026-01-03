@@ -19,34 +19,34 @@ public class LoginPage_BKEG extends BasePage {
     int mailPort = 993;
     String mailProtocol = "imaps";
     String mailUsername = "ray@airfeedkh.com";
-    String mailPassword = "ilwakvjpmqqzxkcs"; // use secure storage, not hard-coded
-    String subjectKeyword_Signin = "Sign in/Sign up with OTP";
+    String mailPassword = "xcoyyiyfcnwqbpwr"; // use secure storage, not hard-coded
+    String subjectKeyword_Signin = "Sign";// in/Sign up with OTP;
     String subjectKeyword_FGPW = "Reset Password with OTP";
     int timeoutSeconds = 60;
 
-    // Login With OTP
+    // Sign In With OTP
     private By headerLoginPage = By.xpath("//h1[normalize-space()='Sign in or Create an account']");
     private By inputEmail = By.xpath("//div[@data-slot='form-item']//input[@type='email']");
     private By buttonContinue = By.xpath("//button[@type='submit']");
     private By inputOTP_Signin = By.xpath("//div[@data-slot='input-otp-group']/following-sibling::div//input");
     private By buttonContinue_SigninOTP = By.xpath("//button[normalize-space()='Continue']");
-    private By alertLoginSuccess = By.xpath("//div[@class='w-full max-w-md']/descendant::div//span");
-    private By alertInvalidEmail = By.xpath("//span[normalize-space()='Enter a valid email']");
-    private By alertResendOTP5Times = By.xpath("//div[@class='w-full max-w-md']/descendant::div//span");
-    private By SigninWithOTP_alertEmailInactive = By.xpath("//div[@class='w-full']/descendant::div//span");
-    private By AlertSigninWithOTP_FGPW_Duration60s = By.xpath("//div[@class='w-full max-w-md']/descendant::div//span");
+    private By alertLoginSuccess = By.xpath("//div[@class='relative pl-7 flex items-center']/descendant::div");
+    private By alertEmailNull=By.xpath("//p[normalize-space()='Email is required']");
+    private By alertInvalidEmail = By.xpath("//p[normalize-space()='Enter a valid email']");
+    private By alertResendOTP5Times = By.xpath("//div[@class='relative pl-7 flex items-center']/descendant::div");
+    private By AlertSigninWithOTP_FGPW_Duration60s = By.xpath("//div[@class='relative pl-7 flex items-center']/descendant::div");
     private By buttonSigninWithOTP = By.xpath("//button[normalize-space()='Sign in with OTP']");
     private By buttonBacktoSignIn = By.xpath("//button[normalize-space()='Sign in']");
 
-    //Login Password
+    //Sign In With Password
     private By buttonContinueWithPassword = By.xpath("//button[normalize-space()='Continue with password']");
     private By inputpassword = By.xpath("//div[@data-slot='form-item']//input[@type='password']");
     private By textlinkForgotPassword = By.xpath("//button[normalize-space()='Forgot Password?']");
     private By alertInvalidEmail_SigninWithPassword = By.xpath("//p[normalize-space()='Enter a valid email']");
-    private By alertIncorrectEmailOrPassword = By.xpath("//div[@class='w-full max-w-md']/descendant::div//span");
+    private By alertIncorrectEmailOrPassword = By.xpath("//div[@class='relative pl-7 flex items-center']/descendant::div");
     private By buttonSignin = By.xpath("//button[normalize-space()='Sign in']");
-    private By alertLoginPasswordSuccess = By.xpath("//span[normalize-space()='Hi, ray']");
-    private By alertEmailNull = By.xpath("//p[normalize-space()='Email is required']");
+    private By alertLoginPasswordSuccess = By.xpath("//span[normalize-space()='Hi, ray@airfeedkh.com']");
+    private By alertEmailNull_SigninWithPassword = By.xpath("//p[normalize-space()='Email is required']");
     private By alertPasswordNull = By.xpath("//p[normalize-space()='Password is required']");
     private By alertSigninWithPasswordSuccess = By.xpath("//div[@class='w-full max-w-md']/descendant::div//span");
 
@@ -55,13 +55,13 @@ public class LoginPage_BKEG extends BasePage {
     private By buttonForgetPassword = By.xpath("//button[normalize-space()='Forgot Password?']");
     private By emailForgetPassword = By.xpath("//input[@id='«r28»-form-item']");
     private By buttonSendCode = By.xpath("//button[normalize-space()='Send code']");
-    private By alertEmailNotLinkAccount = By.xpath("//div[@class ='w-full max-w-md']/descendant::div//span");
+    private By alertEmailNotLinkAccount = By.xpath("//div[@class='relative pl-7 flex items-center']/descendant::div");
     private By alertEmailNullAndInValid = By.xpath("//p[normalize-space()='Enter a valid email'])");
     private By inputOTPForgotPassWord = By.xpath("//div[@data-slot='input-otp-group']/following-sibling::div//input");
     private By buttonContinueForgotPassword = By.xpath("//button[normalize-space()='Continue']");
     private By buttonResendOTPCode = By.xpath("//button[normalize-space()='Resend OTP code']");
-    private By alertOTPWrong = By.xpath("//div[@data-slot='form-item']/preceding-sibling::div[@class='w-full max-w-md']");
-    private By alertOTPWrong5Times = By.xpath("//div[@data-slot='form-item']/preceding-sibling::div[@class='w-full max-w-md']");
+    private By alertOTPWrong = By.xpath("//div[@class='relative pl-7 flex items-center']/descendant::div");
+    private By alertOTPWrong5Times = By.xpath("//div[@class='relative pl-7 flex items-center']/descendant::div");
     private By alertFGPW_SigninWithOTP_Duration60s = By.xpath("//div[@class='w-full']/descendant::div//span");
 
 
@@ -70,9 +70,9 @@ public class LoginPage_BKEG extends BasePage {
     private By buttonConfirm = By.xpath("//button[normalize-space()='Confirm']");
     private By alertPasswordNotMatched = By.xpath("//div[@data-slot='form-item']/descendant::p");
     private By alertPassWordNull = By.xpath("//div[@data-slot='form-item']/descendant::p[normalize-space()='Password must be at least 8 characters long']");
-    private By alertSetNewPasswordSuccess = By.xpath("//p[normalize-space()= 'Your password has been changed successfully.']");
+    private By alertSetNewPasswordSuccess = By.xpath("//p[normalize-space()= 'Password changed successfully! Please wait, we will redirect you to homepage in a second.']");
     private By FGPW_AlertEmailNullAndInValid = By.xpath("//div[@data-slot='form-item']/descendant::p");
-    private By alertEmaiLInActive = By.xpath("//div[@class='w-full max-w-md']/descendant::div//span");
+    private By alertEmaiLInActive = By.xpath("//div[@class='relative pl-7 flex items-center']/descendant::div");
 
     // ************ Method Common ***********
     public void navigatetourl() {
@@ -237,7 +237,7 @@ public class LoginPage_BKEG extends BasePage {
         enterEmail("ray@airfeedkh.com");
         clickButtonContinue();
 
-        String otp = fetchOtpFromEmail(mailHost, mailPort, mailProtocol, mailUsername, mailPassword, subjectKeyword_FGPW, timeoutSeconds);
+        String otp = fetchOtpFromEmail(mailHost, mailPort, mailProtocol, mailUsername, mailPassword, subjectKeyword_Signin, timeoutSeconds);
         WebUI.setText(inputOTP_Signin, otp);
         WebUI.clickElement(buttonContinueForgotPassword);
 
@@ -255,9 +255,9 @@ public class LoginPage_BKEG extends BasePage {
         clickButtonContinue();
 
         // Verify
-        WebUI.waitForElementVisible(alertInvalidEmail);
-        String messageInvalidEmail = WebUI.getElementText(alertInvalidEmail);
-        WebUI.assertEquals(messageInvalidEmail, "Enter a valid email", "Message not match");
+        WebUI.waitForElementVisible(alertEmailNull);
+        String messageInvalidEmail = WebUI.getElementText(alertEmailNull);
+        WebUI.assertEquals(messageInvalidEmail, "Email is required", "Message not match");
     }
 
     public void loginWithOTP_EmailInvalid() throws Exception {
@@ -351,8 +351,8 @@ public class LoginPage_BKEG extends BasePage {
         clickButtonContinue();
 
         // Verify
-        WebUI.waitForElementVisible(SigninWithOTP_alertEmailInactive);
-        String AlertSetNewPasswordSuccess = WebUI.getElementText(SigninWithOTP_alertEmailInactive);
+        WebUI.waitForElementVisible(alertEmaiLInActive);
+        String AlertSetNewPasswordSuccess = WebUI.getElementText(alertEmaiLInActive);
         WebUI.assertEquals(AlertSetNewPasswordSuccess, "This account is currently inactive. Please reach out to our support team to reactivate your account.", "Message not match");
 
     }
@@ -423,7 +423,7 @@ public class LoginPage_BKEG extends BasePage {
         navigatetourl();
         clickButtonSignin();
         clickButtonContinueWithPassword();
-        enterEmail("airfeedkh");
+        enterEmail("ray@airfeedkh.com");
         enterPassword("");
         WebUI.clickElement(buttonSignin);
 
@@ -598,6 +598,7 @@ public class LoginPage_BKEG extends BasePage {
         WebUI.setText(inputOTP_Signin, otp);
         WebUI.clickElement(buttonContinueForgotPassword);
 
+        WebUI.waitForPageLoaded();
         enterNewPassword("raygay11$");
         enterConfirmNewPassword("raygay11$");
         clickButtonConfirm_FGPW();
@@ -606,7 +607,7 @@ public class LoginPage_BKEG extends BasePage {
         WebUI.waitForPageLoaded();
         WebUI.waitForElementVisible(alertSetNewPasswordSuccess);
         String AlertSetNewPasswordSuccess = WebUI.getElementText(alertSetNewPasswordSuccess);
-        WebUI.assertEquals(AlertSetNewPasswordSuccess, "Your password has been changed successfully.", "Message not match");
+        WebUI.assertEquals(AlertSetNewPasswordSuccess, "Password changed successfully! Please wait, we will redirect you to homepage in a second.", "Message not match");
 
     }
 
@@ -649,7 +650,7 @@ public class LoginPage_BKEG extends BasePage {
         // Verify
         WebUI.waitForElementVisible(FGPW_AlertEmailNullAndInValid);
         String AlertEmailNotLink = WebUI.getElementText(FGPW_AlertEmailNullAndInValid);
-        WebUI.assertEquals(AlertEmailNotLink, "Enter a valid email", "Message not match");
+        WebUI.assertEquals(AlertEmailNotLink, "Email is required", "Message not match");
     }
 
     public void FGPW_PasswordNotMatch() throws Exception {

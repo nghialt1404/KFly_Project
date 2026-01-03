@@ -1,28 +1,27 @@
 package KFly_Project_AdminPage.pages;
 
+
 import Utils.LogUtils;
-import drivers.DriverManager;
+import com.sun.mail.imap.IMAPFolder;
 import helpers.PropertiesHelper;
-import keyword.WebUI;
 import jakarta.mail.*;
 import jakarta.mail.internet.MimeMultipart;
-import jakarta.mail.search.SubjectTerm;
+import keyword.WebUI;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
-import org.testng.Assert;
 
+import java.util.Date;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class LoginPage_Admin {
 
-    String mailHost = "imap.gmail.com";// e.g. imap.gmail.com
+    String mailHost = "imap.gmail.com";
     int mailPort = 993;
     String mailProtocol = "imaps";
     String mailUsername = "ray@airfeedkh.com";
-    String mailPassword = "ilwakvjpmqqzxkcs"; // use secure storage, not hard-coded
-    String subjectKeyword_Signin = "K-FLY - Admin OTP";
+    String mailPassword = "ilwakvjpmqqzxkcs";
     int timeoutSeconds = 60;
 
     // Element Login With OTP
@@ -44,9 +43,12 @@ public class LoginPage_Admin {
         WebUI.openURL(PropertiesHelper.getValue("url_admin"));
     }
 
-    public String fetchOtpFromEmail(String host, int port, String protocol, String username, String password, String subjectKeyword, int timeoutSeconds) throws Exception {
+    public String fetchOtpFromEmail(String host, int port, String protocol,
+                                    String username, String password,
+                                    int timeoutSeconds) throws Exception {
+
         Properties props = new Properties();
-        props.put("mail.store.protocol", protocol);
+        props.put("mail.store.protocol", "imaps");
         props.put("mail.imaps.ssl.enable", "true");
         props.put("mail.imaps.port", String.valueOf(port));
         props.put("mail.imaps.connectiontimeout", "15000");
@@ -55,70 +57,76 @@ public class LoginPage_Admin {
 
         Session session = Session.getInstance(props);
         Store store = null;
-        Folder inbox = null;
+        IMAPFolder inbox = null;
+
+        // Subject: "{{OTPcode}} is your ELUX-RMS verification code"
+        Pattern subjectOtpPattern = Pattern.compile(
+                "\\b(\\d{4,8})\\b\\s*is\\s*your\\s*(?:ELUX\\s*-\\s*RMS|RMS\\s*-\\s*ELUX)\\s*verification\\s*code",
+                Pattern.CASE_INSENSITIVE
+        );
+
+        // Body có thể là "7 0 5 7 1 3" hoặc "705713"
+        Pattern bodyOtpPattern = Pattern.compile("(?<!\\d)(?:\\d\\s*){4,8}(?!\\d)");
+
+        long startTime = System.currentTimeMillis();
+        long endTime = startTime + timeoutSeconds * 1000L;
 
         try {
-            store = session.getStore(protocol);
+            store = session.getStore("imaps");
             store.connect(host, port, username, password);
-            inbox = store.getFolder("INBOX");
+
+            inbox = (IMAPFolder) store.getFolder("INBOX");
             inbox.open(Folder.READ_ONLY);
 
-            // ✅ Lấy thời điểm bắt đầu để so sánh mail mới
-            long startTime = System.currentTimeMillis();
-            long endTime = startTime + timeoutSeconds * 1000L;
-            Pattern otpPattern = Pattern.compile("\\b(\\d{4,8})\\b");
-
-            LogUtils.info("⏳ Waiting for new OTP mail after: " + new java.util.Date(startTime));
-
-            Message lastChecked = null;
-            String otp = null;
+            // ✅ baseline UID: tất cả mail có UID <= baseline là "cũ"
+            long baselineUid = inbox.getUIDNext() - 1;
+            LogUtils.info("⏳ Waiting NEW OTP after: " + new Date(startTime)
+                    + " | baselineUid=" + baselineUid);
 
             while (System.currentTimeMillis() < endTime) {
-                // tìm mail có subject chứa từ khóa
-                Message[] messages = inbox.search(new SubjectTerm(subjectKeyword));
-                if (messages != null && messages.length > 0) {
-                    Message latest = messages[messages.length - 1];
 
-                    // Kiểm tra mail có mới hơn thời điểm start không
-                    java.util.Date sentDate = latest.getSentDate();
-                    java.util.Date receivedDate = latest.getReceivedDate();
+                // ✅ Refresh folder để thấy mail mới
+                inbox.getMessageCount();
 
-                    long sentTime = sentDate != null ? sentDate.getTime() : 0;
-                    long receivedTime = receivedDate != null ? receivedDate.getTime() : 0;
-                    long mailTime = Math.max(sentTime, receivedTime);
+                int total = inbox.getMessageCount();
+                int from = Math.max(1, total - 30);
+                Message[] messages = inbox.getMessages(from, total);
 
-                    if (mailTime > startTime) {
-                        // Chỉ đọc nếu là mail mới
-                        String body = getMailText(latest);
-                        Matcher matcher = otpPattern.matcher(body);
-                        if (matcher.find()) {
-                            otp = matcher.group(1);
-                            LogUtils.info("✅ Found NEW OTP: " + otp);
-                            LogUtils.info("📨 Mail sent: " + sentDate + " | received: " + receivedDate);
-                            LogUtils.info("📩 Subject: " + latest.getSubject());
-                            break;
-                        } else {
-                            LogUtils.info("⚠️ Found new mail but no OTP pattern found.");
+                // duyệt từ mới -> cũ
+                for (int i = messages.length - 1; i >= 0; i--) {
+                    Message msg = messages[i];
+                    long uid = inbox.getUID(msg);
+
+                    // ✅ Chỉ xử lý mail thật sự mới sau khi bắt đầu
+                    if (uid <= baselineUid) continue;
+
+                    String subject = msg.getSubject() == null ? "" : msg.getSubject();
+
+                    // 1) OTP trong subject
+                    Matcher sm = subjectOtpPattern.matcher(subject);
+                    if (sm.find()) {
+                        String otp = sm.group(1);
+                        LogUtils.info("✅ OTP from SUBJECT: " + otp + " | uid=" + uid);
+                        return otp;
+                    }
+
+                    // 2) OTP trong body (gom số lại)
+                    String body = getMailText(msg);
+                    if (body != null && !body.isBlank()) {
+                        Matcher bm = bodyOtpPattern.matcher(body);
+                        if (bm.find()) {
+                            String otp = bm.group().replaceAll("\\s+", "");
+                            LogUtils.info("✅ OTP from BODY: " + otp + " | uid=" + uid);
+                            return otp;
                         }
-                    } else {
-                        LogUtils.info("⌛ Old mail found (" + sentDate + "), waiting...");
                     }
                 }
 
-                Thread.sleep(3000);
-                inbox.getMessageCount(); // refresh mailbox (IMAP keeps connection alive)
+                WebUI.sleep(2);
             }
 
-            if (otp == null) {
-                throw new RuntimeException("❌ OTP not found within timeout.");
-            }
-            return otp;
+            throw new RuntimeException("❌ OTP not found within timeout.");
 
-        } catch (MessagingException me) {
-            if (me.getCause() instanceof java.net.ConnectException) {
-                throw new RuntimeException("⚠️ Could not connect to IMAP host " + host + ":" + port + ". Check network or credentials.", me);
-            }
-            throw me;
         } finally {
             if (inbox != null && inbox.isOpen()) try {
                 inbox.close(false);
@@ -129,6 +137,7 @@ public class LoginPage_Admin {
             } catch (Exception ignored) {
             }
         }
+
     }
 
     private String getMailText(Message message) throws Exception {
@@ -143,7 +152,6 @@ public class LoginPage_Admin {
         return "";
     }
 
-
     private String getTextFromMimeMultipart(MimeMultipart mimeMultipart) throws Exception {
         StringBuilder result = new StringBuilder();
         int count = mimeMultipart.getCount();
@@ -154,34 +162,12 @@ public class LoginPage_Admin {
                 if (content != null) result.append(content.toString());
             } else if (part.isMimeType("text/html")) {
                 Object content = part.getContent();
-                if (content != null) {
-                    // crude HTML -> text fallback (you can improve with jsoup)
-                    result.append(content.toString().replaceAll("\\<.*?\\>", " "));
-                }
+                if (content != null) result.append(content.toString().replaceAll("\\<.*?\\>", " "));
             } else if (part.getContent() instanceof MimeMultipart) {
                 result.append(getTextFromMimeMultipart((MimeMultipart) part.getContent()));
             }
         }
         return result.toString();
-    }
-
-    // Case-insensitive subject search
-    private static class SubjectContainsTerm extends jakarta.mail.search.SearchTerm {
-        private final String keyword;
-
-        SubjectContainsTerm(String keyword) {
-            this.keyword = (keyword == null) ? "" : keyword.toLowerCase();
-        }
-
-        @Override
-        public boolean match(Message msg) {
-            try {
-                String subject = msg.getSubject();
-                return subject != null && subject.toLowerCase().contains(keyword);
-            } catch (MessagingException e) {
-                return false;
-            }
-        }
     }
 
 
@@ -197,7 +183,7 @@ public class LoginPage_Admin {
         navigatetourl();
         enterEmail("ray@airfeedkh.com");
         clickButtonContinue();
-        String otp = fetchOtpFromEmail(mailHost, mailPort, mailProtocol, mailUsername, mailPassword, subjectKeyword_Signin, timeoutSeconds);
+        String otp = fetchOtpFromEmail(mailHost, mailPort, mailProtocol, mailUsername, mailPassword, timeoutSeconds);
         WebUI.setText(inputOTP, otp);
         WebUI.clickElement(buttonVerify);
 
@@ -205,7 +191,7 @@ public class LoginPage_Admin {
         WebUI.waitForElementVisible(alertLoginSuccess);
         String messageLoginSuccess = WebUI.getElementText(alertLoginSuccess);
         WebUI.assertEquals(messageLoginSuccess,
-                "Welcome back, System Administrator! Please wait while we redirect you to the homepage.", "Message not match");
+                "Welcome back, Ray QC! Please wait while we redirect you to the homepage.", "Message not match");
     }
 
     public void SigninWithOTP_EmailInvalid() throws Exception {
@@ -235,7 +221,7 @@ public class LoginPage_Admin {
         navigatetourl();
         enterEmail("ray@airfeedkh.com");
         clickButtonContinue();
-        Thread.sleep(3000);
+        WebUI.sleep(2);
 
         for (int i = 1; i <= 5; i++) {
             WebUI.setText(inputOTP, "439143");
@@ -285,7 +271,7 @@ public class LoginPage_Admin {
 
         WebUI.waitForElementVisible(alertResendOTP5Times);
         String alertResendOTP = WebUI.getElementText(alertResendOTP5Times);
-        WebUI.assertEquals(alertResendOTP, "You've requested too many OTP codes. Please wait for 60 minutes before trying again.", "Message not match");
+        WebUI.assertEquals(alertResendOTP, "You have requested too many OTP codes. Please wait for 59 minutes before trying again.", "Message not match");
 
     }
 
@@ -295,7 +281,7 @@ public class LoginPage_Admin {
         clickButtonContinue();
 
         // LẤY OTP NGAY SAU KHI REQUEST
-        String otp = fetchOtpFromEmail(mailHost, mailPort, mailProtocol, mailUsername, mailPassword, subjectKeyword_Signin, timeoutSeconds);
+        String otp = fetchOtpFromEmail(mailHost, mailPort, mailProtocol, mailUsername, mailPassword, timeoutSeconds);
         // Chờ 5 phút
         WebUI.sleep(310);
         WebUI.setText(inputOTP, otp);
