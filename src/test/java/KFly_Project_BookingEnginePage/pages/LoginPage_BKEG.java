@@ -1,5 +1,6 @@
 package KFly_Project_BookingEnginePage.pages;
 
+import Utils.LogUtils;
 import helpers.PropertiesHelper;
 import keyword.WebUI;
 import jakarta.mail.*;
@@ -20,7 +21,7 @@ public class LoginPage_BKEG extends BasePage {
     String mailProtocol = "imaps";
     String mailUsername = "ray@airfeedkh.com";
     String mailPassword = "xcoyyiyfcnwqbpwr"; // use secure storage, not hard-coded
-    String subjectKeyword_Signin = "Sign";// in/Sign up with OTP;
+    String subjectKeyword_Signin = "Sign in/Sign up with OTP";
     String subjectKeyword_FGPW = "Reset Password with OTP";
     int timeoutSeconds = 60;
 
@@ -30,38 +31,35 @@ public class LoginPage_BKEG extends BasePage {
     private By buttonContinue = By.xpath("//button[@type='submit']");
     private By inputOTP_Signin = By.xpath("//div[@data-slot='input-otp-group']/following-sibling::div//input");
     private By buttonContinue_SigninOTP = By.xpath("//button[normalize-space()='Continue']");
-    private By alertLoginSuccess = By.xpath("//div[@class='relative pl-7 flex items-center']/descendant::div");
-    private By alertEmailNull=By.xpath("//p[normalize-space()='Email is required']");
-    private By alertInvalidEmail = By.xpath("//p[normalize-space()='Enter a valid email']");
-    private By alertResendOTP5Times = By.xpath("//div[@class='relative pl-7 flex items-center']/descendant::div");
-    private By AlertSigninWithOTP_FGPW_Duration60s = By.xpath("//div[@class='relative pl-7 flex items-center']/descendant::div");
+    private By alertLoginSuccess = By.xpath("//div[@class='flex items-center gap-3']/descendant::div");
+    private By alertEmailNull = By.xpath("//p[normalize-space()='Email is required']");
+    private By alertEmailInvalid = By.xpath("//p[normalize-space()='Enter a valid email']");
+    private By alertEmaiLInActive = By.xpath("//div[@class='flex items-center gap-3']/descendant::div");
+    private By alertResendOTP5Times = By.xpath("//div[@class='flex items-center gap-3']/descendant::div");
+    private By alertSigninWithOTP_FGPW_Duration60s = By.xpath("//div[@class='flex items-center gap-3']/descendant::div");
     private By buttonSigninWithOTP = By.xpath("//button[normalize-space()='Sign in with OTP']");
     private By buttonBacktoSignIn = By.xpath("//button[normalize-space()='Sign in']");
 
     //Sign In With Password
     private By buttonContinueWithPassword = By.xpath("//button[normalize-space()='Continue with password']");
     private By inputpassword = By.xpath("//div[@data-slot='form-item']//input[@type='password']");
-    private By textlinkForgotPassword = By.xpath("//button[normalize-space()='Forgot Password?']");
-    private By alertInvalidEmail_SigninWithPassword = By.xpath("//p[normalize-space()='Enter a valid email']");
-    private By alertIncorrectEmailOrPassword = By.xpath("//div[@class='relative pl-7 flex items-center']/descendant::div");
-    private By buttonSignin = By.xpath("//button[normalize-space()='Sign in']");
-    private By alertLoginPasswordSuccess = By.xpath("//span[normalize-space()='Hi, ray@airfeedkh.com']");
-    private By alertEmailNull_SigninWithPassword = By.xpath("//p[normalize-space()='Email is required']");
+    private By textLinkForgotPassword = By.xpath("//button[normalize-space()='Forgot Password?']");
+    private By alertIncorrectEmailOrPassword = By.xpath("//div[@class='flex items-center gap-3']/descendant::div");
     private By alertPasswordNull = By.xpath("//p[normalize-space()='Password is required']");
-    private By alertSigninWithPasswordSuccess = By.xpath("//div[@class='w-full max-w-md']/descendant::div//span");
+    private By buttonSignin = By.xpath("//button[normalize-space()='Sign in']");
 
 
     // Forgot Password
     private By buttonForgetPassword = By.xpath("//button[normalize-space()='Forgot Password?']");
     private By emailForgetPassword = By.xpath("//input[@id='«r28»-form-item']");
     private By buttonSendCode = By.xpath("//button[normalize-space()='Send code']");
-    private By alertEmailNotLinkAccount = By.xpath("//div[@class='relative pl-7 flex items-center']/descendant::div");
+    private By alertEmailNotLinkAccount = By.xpath("//div[@class='flex items-center gap-3']/descendant::div");
     private By alertEmailNullAndInValid = By.xpath("//p[normalize-space()='Enter a valid email'])");
     private By inputOTPForgotPassWord = By.xpath("//div[@data-slot='input-otp-group']/following-sibling::div//input");
     private By buttonContinueForgotPassword = By.xpath("//button[normalize-space()='Continue']");
     private By buttonResendOTPCode = By.xpath("//button[normalize-space()='Resend OTP code']");
-    private By alertOTPWrong = By.xpath("//div[@class='relative pl-7 flex items-center']/descendant::div");
-    private By alertOTPWrong5Times = By.xpath("//div[@class='relative pl-7 flex items-center']/descendant::div");
+    private By alertEnterWrongOTP = By.xpath("//div[@class='flex items-center gap-3']/descendant::div");
+    private By alertEnterWrongOTP5Times = By.xpath("//div[@class='flex items-center gap-3']/descendant::div");
     private By alertFGPW_SigninWithOTP_Duration60s = By.xpath("//div[@class='w-full']/descendant::div//span");
 
 
@@ -70,16 +68,12 @@ public class LoginPage_BKEG extends BasePage {
     private By buttonConfirm = By.xpath("//button[normalize-space()='Confirm']");
     private By alertPasswordNotMatched = By.xpath("//div[@data-slot='form-item']/descendant::p");
     private By alertPassWordNull = By.xpath("//div[@data-slot='form-item']/descendant::p[normalize-space()='Password must be at least 8 characters long']");
-    private By alertSetNewPasswordSuccess = By.xpath("//p[normalize-space()= 'Password changed successfully! Please wait, we will redirect you to homepage in a second.']");
-    private By FGPW_AlertEmailNullAndInValid = By.xpath("//div[@data-slot='form-item']/descendant::p");
-    private By alertEmaiLInActive = By.xpath("//div[@class='relative pl-7 flex items-center']/descendant::div");
+    private By alertSetNewPasswordSuccess = By.xpath("//p[normalize-space()= 'Your password has been changed successfully. Please log in again with your new password.");
 
     // ************ Method Common ***********
     public void navigatetourl() {
-        WebUI.openURL(PropertiesHelper.getValue("url_bkeg"));
+        WebUI.openURL(PropertiesHelper.getValue("url_bkeg_release"));
     }
-
-// ************* Method SigninWithOTP *******************
 
     public void clickButtonContinue() {
         WebUI.clickElement(buttonContinue);
@@ -114,7 +108,7 @@ public class LoginPage_BKEG extends BasePage {
             long endTime = startTime + timeoutSeconds * 1000L;
             Pattern otpPattern = Pattern.compile("\\b(\\d{4,8})\\b");
 
-            System.out.println("⏳ Waiting for new OTP mail after: " + new java.util.Date(startTime));
+            LogUtils.info("⏳ Waiting for new OTP mail after: " + new java.util.Date(startTime));
 
             Message lastChecked = null;
             String otp = null;
@@ -139,15 +133,15 @@ public class LoginPage_BKEG extends BasePage {
                         Matcher matcher = otpPattern.matcher(body);
                         if (matcher.find()) {
                             otp = matcher.group(1);
-                            System.out.println("✅ Found NEW OTP: " + otp);
-                            System.out.println("📨 Mail sent: " + sentDate + " | received: " + receivedDate);
-                            System.out.println("📩 Subject: " + latest.getSubject());
+                            LogUtils.info("✅ Found NEW OTP: " + otp);
+                            LogUtils.info("📨 Mail sent: " + sentDate + " | received: " + receivedDate);
+                            LogUtils.info("📩 Subject: " + latest.getSubject());
                             break;
                         } else {
-                            System.out.println("⚠️ Found new mail but no OTP pattern found.");
+                            LogUtils.info("⚠️ Found new mail but no OTP pattern found.");
                         }
                     } else {
-                        System.out.println("⌛ Old mail found (" + sentDate + "), waiting...");
+                        LogUtils.info("⌛ Old mail found (" + sentDate + "), waiting...");
                     }
                 }
 
@@ -230,7 +224,7 @@ public class LoginPage_BKEG extends BasePage {
         }
     }
 
-
+    //################### LOGIN WITH OTP ########################
     public void loginWithOTP_Success() throws Exception {
         navigatetourl();
         clickButtonSignin();
@@ -243,8 +237,8 @@ public class LoginPage_BKEG extends BasePage {
 
         // Verify
         WebUI.waitForElementVisible(alertLoginSuccess);
-        String messageLoginSuccess = WebUI.getElementText(alertLoginSuccess);
-        WebUI.assertEquals(messageLoginSuccess,
+        String textAlertLoginSuccess = WebUI.getElementText(alertLoginSuccess);
+        WebUI.assertEquals(textAlertLoginSuccess,
                 "Sign in successfully! Please wait, we will redirect you to homepage in a second", "Message not match");
     }
 
@@ -256,8 +250,8 @@ public class LoginPage_BKEG extends BasePage {
 
         // Verify
         WebUI.waitForElementVisible(alertEmailNull);
-        String messageInvalidEmail = WebUI.getElementText(alertEmailNull);
-        WebUI.assertEquals(messageInvalidEmail, "Email is required", "Message not match");
+        String textAlertEmailNull = WebUI.getElementText(alertEmailNull);
+        WebUI.assertEquals(textAlertEmailNull, "Email is required", "Message not match");
     }
 
     public void loginWithOTP_EmailInvalid() throws Exception {
@@ -267,9 +261,9 @@ public class LoginPage_BKEG extends BasePage {
         clickButtonContinue();
 
         // Verify
-        WebUI.waitForElementVisible(alertInvalidEmail);
-        String messageInvalidEmail = WebUI.getElementText(alertInvalidEmail);
-        WebUI.assertEquals(messageInvalidEmail, "Enter a valid email", "Message not match");
+        WebUI.waitForElementVisible(alertEmailInvalid);
+        String textAlertEmailInvalid = WebUI.getElementText(alertEmailInvalid);
+        WebUI.assertEquals(textAlertEmailInvalid, "Enter a valid email", "Message not match");
     }
 
     public void loginWithOTP_enterWrongOTP() throws Exception {
@@ -281,9 +275,9 @@ public class LoginPage_BKEG extends BasePage {
         WebUI.clickElement(buttonContinue_SigninOTP);
 
 
-        WebUI.waitForElementVisible(alertOTPWrong);
-        String alertOTPFail = WebUI.getElementText(alertOTPWrong);
-        WebUI.assertEquals(alertOTPFail, "The OTP code is invalid. Please re-enter or request a new OTP", "Message not match");
+        WebUI.waitForElementVisible(alertEnterWrongOTP);
+        String textAlertEnterWrongOTP = WebUI.getElementText(alertEnterWrongOTP);
+        WebUI.assertEquals(textAlertEnterWrongOTP, "The OTP code is invalid. Please re-enter or request a new OTP", "Message not match");
 
     }
 
@@ -301,28 +295,28 @@ public class LoginPage_BKEG extends BasePage {
             WebUI.clickElement(buttonContinue_SigninOTP);
         }
 
-        WebUI.waitForElementVisible(alertOTPWrong5Times);
-        String alertOTPFail = WebUI.getElementText(alertOTPWrong5Times);
-        WebUI.assertEquals(alertOTPFail, "You have entered the OTP incorrectly too many times. Please request a new OTP.", "Message not match");
+        WebUI.waitForElementVisible(alertEnterWrongOTP5Times);
+        String textAlertEnterWrongOTP5Times = WebUI.getElementText(alertEnterWrongOTP5Times);
+        WebUI.assertEquals(textAlertEnterWrongOTP5Times, "You have entered the OTP incorrectly too many times. Please request a new OTP.", "Message not match");
 
     }
 
     public void loginWithOTP_clickResendButton5Times() {
         navigatetourl();
         clickButtonSignin();
-        enterEmail("ray@airfeedkh.com");
+        enterEmail("ray123@airfeedkh.com");
         clickButtonContinue();
 
         // Chờ trang hiển thị nút Resend lần đầu
         WebUI.waitForElementVisible(buttonResendOTPCode, 70);
 
-        for (int i = 1; i <= 5; i++) {
+        for (int i = 1; i <= 6; i++) {
             try {
                 WebUI.waitForElementToBeClickAble(buttonResendOTPCode, 20);
                 WebUI.clickElement(buttonResendOTPCode);
-                System.out.println("✅ Click Resend OTP lần " + i + " thành công");
+                LogUtils.info("✅ Click Resend OTP lần " + i + " thành công");
             } catch (TimeoutException e) {
-                System.out.println("⚠️ Timeout ở lần " + i);
+                LogUtils.info("⚠️ Timeout ở lần " + i);
                 break;
             }
 
@@ -336,12 +330,12 @@ public class LoginPage_BKEG extends BasePage {
             WebUI.sleep(60);
         }
 
-        System.out.println("🎯 Kết thúc test resend OTP (tối đa 5 lần hoặc khi có lỗi).");
+        LogUtils.info("🎯 Kết thúc test resend OTP (tối đa 5 lần hoặc khi có lỗi).");
 
         // Verify
         WebUI.waitForElementVisible(alertResendOTP5Times);
-        String alertMessageOTP5Times = WebUI.getElementText(alertResendOTP5Times);
-        WebUI.assertEquals(alertMessageOTP5Times, "You've requested too many OTP codes. Please wait for 1 hour before trying again.", "Message not match");
+        String textAlertResendOTP5Times = WebUI.getElementText(alertResendOTP5Times);
+        WebUI.assertEquals(textAlertResendOTP5Times, "You've requested too many OTP codes. Please try again after 1 hour.", "Message not match");
     }
 
     public void loginWithOTP_EmailInActive() throws Exception {
@@ -352,8 +346,8 @@ public class LoginPage_BKEG extends BasePage {
 
         // Verify
         WebUI.waitForElementVisible(alertEmaiLInActive);
-        String AlertSetNewPasswordSuccess = WebUI.getElementText(alertEmaiLInActive);
-        WebUI.assertEquals(AlertSetNewPasswordSuccess, "This account is currently inactive. Please reach out to our support team to reactivate your account.", "Message not match");
+        String textAlertEmailInactive = WebUI.getElementText(alertEmaiLInActive);
+        WebUI.assertEquals(textAlertEmailInactive, "This account is currently inactive. Please reach out to our support team to reactivate your account.", "Message not match");
 
     }
 
@@ -368,9 +362,10 @@ public class LoginPage_BKEG extends BasePage {
         WebUI.sleep(600);
 
         // Verify
-        WebUI.waitForElementVisible(headerLoginPage, 10);
-        boolean headerloginpagedisplay = WebUI.checkElementExist(headerLoginPage);
-        Assert.assertTrue(headerloginpagedisplay, "Not back to login page");
+        WebUI.waitForElementVisible(alertEnterWrongOTP);
+        String textAlertOTPExpired = WebUI.getElementText(alertEnterWrongOTP);
+        WebUI.assertEquals(textAlertOTPExpired, "The OTP code is invalid. Please re-enter or request a new OTP", "Message not match");
+
     }
 
     // ********** METHOD FOR LOGIN PASSWORD **************
@@ -396,13 +391,14 @@ public class LoginPage_BKEG extends BasePage {
         clickButtonSignin();
         clickButtonContinueWithPassword();
         enterEmail("ray@airfeedkh.com");
-        enterPassword("raygay11$");
+        enterPassword("12345678");
         WebUI.clickElement(buttonSignin);
 
         // Verify
-        WebUI.waitForPageLoaded();
-        WebUI.waitForElementVisible(alertLoginPasswordSuccess );
-        Assert.assertTrue(WebUI.checkElementExist(alertLoginPasswordSuccess, 5, 1000),"Login with password not success");
+        WebUI.waitForElementVisible(alertLoginSuccess);
+        String textAlertLoginSuccess = WebUI.getElementText(alertLoginSuccess);
+        WebUI.assertEquals(textAlertLoginSuccess,
+                "Sign in successfully! Please wait, we will redirect you to homepage in a second", "Message not match");
     }
 
     public void loginWithPassword_EmailNull() throws Exception {
@@ -410,7 +406,7 @@ public class LoginPage_BKEG extends BasePage {
         clickButtonSignin();
         clickButtonContinueWithPassword();
         enterEmail("");
-        enterPassword("raygay11$");
+        enterPassword("12345678");
         WebUI.clickElement(buttonSignin);
 
         WebUI.waitForElementVisible(alertEmailNull);
@@ -437,7 +433,7 @@ public class LoginPage_BKEG extends BasePage {
         clickButtonSignin();
         clickButtonContinueWithPassword();
         enterEmail("ray123@airfeedkh.com");
-        enterPassword("raygay11$");
+        enterPassword("12345678");
         WebUI.clickElement(buttonSignin);
 
         WebUI.waitForElementVisible(alertIncorrectEmailOrPassword);
@@ -460,7 +456,7 @@ public class LoginPage_BKEG extends BasePage {
 
     }
 
-    public void loginWithPassword_InvalidEmail() throws Exception {
+    public void loginWithPassword_EmailInvalid() throws Exception {
         navigatetourl();
         clickButtonSignin();
         clickButtonContinueWithPassword();
@@ -469,9 +465,9 @@ public class LoginPage_BKEG extends BasePage {
         WebUI.clickElement(buttonSignin);
 
         // Verify
-        WebUI.waitForElementVisible(alertInvalidEmail_SigninWithPassword);
-        String messageInvalidEmail = WebUI.getElementText(alertInvalidEmail_SigninWithPassword);
-        WebUI.assertEquals(messageInvalidEmail, "Enter a valid email", "Message not match");
+        WebUI.waitForElementVisible(alertEmailInvalid);
+        String textAlertEmailInvalid = WebUI.getElementText(alertEmailInvalid);
+        WebUI.assertEquals(textAlertEmailInvalid, "Enter a valid email", "Message not match");
 
     }
 
@@ -486,8 +482,8 @@ public class LoginPage_BKEG extends BasePage {
 
         // Verify
         WebUI.waitForElementVisible(alertEmaiLInActive);
-        String AlertSetNewPasswordSuccess = WebUI.getElementText(alertEmaiLInActive);
-        WebUI.assertEquals(AlertSetNewPasswordSuccess, "This account is currently inactive. Please reach out to our support team to reactivate your account.", "Message not match");
+        String textAlertEmailInactive = WebUI.getElementText(alertEmaiLInActive);
+        WebUI.assertEquals(textAlertEmailInactive, "This account is currently inactive. Please reach out to our support team to reactivate your account.", "Message not match");
 
     }
 
@@ -544,24 +540,24 @@ public class LoginPage_BKEG extends BasePage {
                 WebUI.waitForElementToBeClickAble(buttonResendOTPCode, 70); // chờ countdown 60s
                 WebUI.clickElement(buttonResendOTPCode);
 
-                System.out.println("✅ Click Resend OTP lần " + i + " thành công");
+                LogUtils.info("✅ Click Resend OTP lần " + i + " thành công");
                 Thread.sleep(2000);
 
             } catch (TimeoutException e) {
-                System.out.println("⚠️ Timeout: Nút resend chưa bật lại trong 70s, dừng ở lần " + i);
+                LogUtils.info("⚠️ Timeout: Nút resend chưa bật lại trong 70s, dừng ở lần " + i);
                 break;
             } catch (Exception e) {
-                System.out.println("⚠️ Lỗi ở lần " + i + ": " + e.getMessage());
+                LogUtils.info("⚠️ Lỗi ở lần " + i + ": " + e.getMessage());
                 break;
             }
         }
 
-        System.out.println("🎯 Kết thúc test resend OTP (tối đa 5 lần hoặc khi có lỗi).");
+        LogUtils.info("🎯 Kết thúc test resend OTP (tối đa 5 lần hoặc khi có lỗi).");
 
         // Verify
         WebUI.waitForElementVisible(alertResendOTP5Times);
-        String alertMessageOTP5Times = WebUI.getElementText(alertResendOTP5Times);
-        WebUI.assertEquals(alertMessageOTP5Times, "You've requested too many OTP codes. Please wait for 1 hour before trying again.", "Message not match");
+        String textAlertResendOTP5Times = WebUI.getElementText(alertResendOTP5Times);
+        WebUI.assertEquals(textAlertResendOTP5Times, "You've requested too many OTP codes. Please wait for 1 hour before trying again.", "Message not match");
 
     }
 
@@ -581,9 +577,9 @@ public class LoginPage_BKEG extends BasePage {
             WebUI.clickElement(buttonContinue_SigninOTP);
         }
 
-        WebUI.waitForElementVisible(alertOTPWrong5Times);
-        String alertOTPFail = WebUI.getElementText(alertOTPWrong5Times);
-        WebUI.assertEquals(alertOTPFail, "You have entered the OTP incorrectly too many times. Please request a new OTP.", "Message not match");
+        WebUI.waitForElementVisible(alertEnterWrongOTP5Times);
+        String textAlertWrongOTP5Times = WebUI.getElementText(alertEnterWrongOTP5Times);
+        WebUI.assertEquals(textAlertWrongOTP5Times, "You have entered the OTP incorrectly too many times. Please request a new OTP.", "Message not match");
 
     }
 
@@ -599,15 +595,15 @@ public class LoginPage_BKEG extends BasePage {
         WebUI.clickElement(buttonContinueForgotPassword);
 
         WebUI.waitForPageLoaded();
-        enterNewPassword("raygay11$");
-        enterConfirmNewPassword("raygay11$");
+        enterNewPassword("12345678");
+        enterConfirmNewPassword("12345678");
         clickButtonConfirm_FGPW();
 
         // Verify
         WebUI.waitForPageLoaded();
         WebUI.waitForElementVisible(alertSetNewPasswordSuccess);
-        String AlertSetNewPasswordSuccess = WebUI.getElementText(alertSetNewPasswordSuccess);
-        WebUI.assertEquals(AlertSetNewPasswordSuccess, "Password changed successfully! Please wait, we will redirect you to homepage in a second.", "Message not match");
+        String textAlertSetNewPasswordSuccess = WebUI.getElementText(alertSetNewPasswordSuccess);
+        WebUI.assertEquals(textAlertSetNewPasswordSuccess, "Your password has been changed successfully. Please log in again with your new password.", "Message not match");
 
     }
 
@@ -621,8 +617,8 @@ public class LoginPage_BKEG extends BasePage {
 
         // Verify
         WebUI.waitForElementVisible(alertEmailNotLinkAccount);
-        String AlertEmailNotLink = WebUI.getElementText(alertEmailNotLinkAccount);
-        WebUI.assertEquals(AlertEmailNotLink, "Your email isn't linked to any account", "Message not match");
+        String textAlertEmailNotLink = WebUI.getElementText(alertEmailNotLinkAccount);
+        WebUI.assertEquals(textAlertEmailNotLink, "Your email isn't linked to any account", "Message not match");
     }
 
     public void FGPW_EmailInvalid() throws Exception {
@@ -634,9 +630,9 @@ public class LoginPage_BKEG extends BasePage {
         clickButtonSendCode();
 
         // Verify
-        WebUI.waitForElementVisible(FGPW_AlertEmailNullAndInValid);
-        String AlertEmailNotLink = WebUI.getElementText(FGPW_AlertEmailNullAndInValid);
-        WebUI.assertEquals(AlertEmailNotLink, "Enter a valid email", "Message not match");
+        WebUI.waitForElementVisible(alertEmailInvalid);
+        String textAlertEmailNotLink = WebUI.getElementText(alertEmailInvalid);
+        WebUI.assertEquals(textAlertEmailNotLink, "Enter a valid email", "Message not match");
     }
 
     public void FGPW_EmailNull() throws Exception {
@@ -648,9 +644,9 @@ public class LoginPage_BKEG extends BasePage {
         clickButtonSendCode();
 
         // Verify
-        WebUI.waitForElementVisible(FGPW_AlertEmailNullAndInValid);
-        String AlertEmailNotLink = WebUI.getElementText(FGPW_AlertEmailNullAndInValid);
-        WebUI.assertEquals(AlertEmailNotLink, "Email is required", "Message not match");
+        WebUI.waitForElementVisible(alertEmailNull);
+        String textAlertEmailNotLink = WebUI.getElementText(alertEmailNull);
+        WebUI.assertEquals(textAlertEmailNotLink, "Email is required", "Message not match");
     }
 
     public void FGPW_PasswordNotMatch() throws Exception {
@@ -672,8 +668,8 @@ public class LoginPage_BKEG extends BasePage {
         // Verify
         WebUI.waitForPageLoaded();
         WebUI.waitForElementVisible(alertPasswordNotMatched);
-        String AlertSetNewPasswordSuccess = WebUI.getElementText(alertPasswordNotMatched);
-        WebUI.assertEquals(AlertSetNewPasswordSuccess, "Passwords are not matched", "Message not match");
+        String textAlertPasswordNotMatched = WebUI.getElementText(alertPasswordNotMatched);
+        WebUI.assertEquals(textAlertPasswordNotMatched, "Passwords are not matched", "Message not match");
 
     }
 
@@ -688,8 +684,8 @@ public class LoginPage_BKEG extends BasePage {
         // Verify
         WebUI.waitForPageLoaded();
         WebUI.waitForElementVisible(alertEmaiLInActive);
-        String AlertSetNewPasswordSuccess = WebUI.getElementText(alertEmaiLInActive);
-        WebUI.assertEquals(AlertSetNewPasswordSuccess, "This account is currently inactive. Please reach out to our support team to reactivate your account.", "Message not match");
+        String textAlertEmailInactive = WebUI.getElementText(alertEmaiLInActive);
+        WebUI.assertEquals(textAlertEmailInactive, "This account is currently inactive. Please reach out to our support team to reactivate your account.", "Message not match");
 
     }
 
